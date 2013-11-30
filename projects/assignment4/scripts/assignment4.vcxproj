@@ -85,33 +85,6 @@
       <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\assignment_3.cpp" />
-    <ClCompile Include="..\src\Cube.cpp" />
-    <ClCompile Include="..\src\Parallelogram.cpp" />
-    <ClCompile Include="..\src\PMatrix.cpp" />
-    <ClCompile Include="..\src\Poly.cpp" />
-    <ClCompile Include="..\src\Quaternion.cpp" />
-    <ClCompile Include="..\src\ShaderManager.cpp" />
-    <ClCompile Include="..\src\Square.cpp" />
-    <ClCompile Include="..\src\Triangle.cpp" />
-    <ClCompile Include="..\src\Xparallelogram.cpp" />
-    <ClCompile Include="..\src\XTriangle.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\Cube.h" />
-    <ClInclude Include="..\src\DrawManager.h" />
-    <ClInclude Include="..\src\Parallelogram.h" />
-    <ClInclude Include="..\src\PMatrix.h" />
-    <ClInclude Include="..\src\Poly.h" />
-    <ClInclude Include="..\src\Quaternion.h" />
-    <ClInclude Include="..\src\RGBConverter.h" />
-    <ClInclude Include="..\src\ShaderManager.h" />
-    <ClInclude Include="..\src\Square.h" />
-    <ClInclude Include="..\src\Triangle.h" />
-    <ClInclude Include="..\src\Xparallelogram.h" />
-    <ClInclude Include="..\src\XTriangle.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
