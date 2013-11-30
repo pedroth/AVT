@@ -13,13 +13,19 @@
   <ItemGroup>
     <ClCompile Include="..\src\assignment4.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
+    <ClCompile Include="..\src\Shader.cpp" />
+    <ClCompile Include="..\src\ShaderProgram.cpp" />
+    <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\WorldObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
     <ClInclude Include="..\src\RenderModel.h" />
+    <ClInclude Include="..\src\Shader.h" />
+    <ClInclude Include="..\src\ShaderProgram.h" />
     <ClInclude Include="..\src\uniformsAttribs.h" />
     <ClInclude Include="..\src\WorldObject.h" />
+    <ClInclude Include="..\src\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40943D16-275A-4153-B661-B296AC13E743}</ProjectGuid>
