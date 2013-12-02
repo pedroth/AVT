@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\assignment4.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
+    <ClCompile Include="..\src\RenderModelManager.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
     <ClCompile Include="..\src\ShaderProgram.cpp" />
     <ClCompile Include="..\src\utils.cpp" />
@@ -22,6 +23,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
     <ClInclude Include="..\src\RenderModel.h" />
+    <ClInclude Include="..\src\RenderModelManager.h" />
     <ClInclude Include="..\src\Shader.h" />
     <ClInclude Include="..\src\ShaderProgram.h" />
     <ClInclude Include="..\src\uniformsAttribs.h" />

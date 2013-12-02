@@ -5,12 +5,16 @@
 
 #include <map>
 
-std::map<std::string, size_t> VertAttrOffsets;
-
 RenderModel::RenderModel(const std::vector<Vertex> &verts, const std::vector<Normal> &norm, const std::vector<TexCoord> &tex) :
 m_vertices(verts), m_normals(norm), m_texCoords(tex),
 m_vaoName(0), m_vertboName(0), m_normboName(0), m_texboName(0)
-{}
+{
+	setupModel();
+}
+RenderModel::~RenderModel()
+{
+	cleanupModel();
+}
 void RenderModel::setupModel()
 {
 	//create vertexArray

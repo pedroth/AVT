@@ -22,6 +22,7 @@ class RenderModel {
 	std::vector<TexCoord> m_texCoords;
 public:
 	RenderModel(const std::vector<Vertex> &verts, const std::vector<Normal> &norm, const std::vector<TexCoord> &tex);
+	~RenderModel();
 	void setupModel();
 	void cleanupModel();
 	void drawModel() const;
