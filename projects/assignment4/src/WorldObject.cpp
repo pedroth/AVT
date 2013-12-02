@@ -23,5 +23,10 @@ void WorldObject::setScale(glm::vec3 scale) {
 	this->scale = scale;
 }
 void WorldObject::setMesh(RenderModel* mesh) {
-
+	this->mesh = mesh;
+}
+void WorldObject::draw(ShaderProgram* shader) {
+	shader->bind();
+	mesh->drawModel();
+	shader->unbind();
 }
