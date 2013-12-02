@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\assignment4.cpp" />
+    <ClCompile Include="..\src\ModelLoader.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
     <ClCompile Include="..\src\RenderModelManager.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
@@ -23,12 +24,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
+    <ClInclude Include="..\src\ModelLoader.h" />
     <ClInclude Include="..\src\RenderModel.h" />
     <ClInclude Include="..\src\RenderModelManager.h" />
     <ClInclude Include="..\src\Shader.h" />
     <ClInclude Include="..\src\ShaderManager.h" />
     <ClInclude Include="..\src\ShaderProgram.h" />
-    <ClInclude Include="..\src\uniformsAttribs.h" />
     <ClInclude Include="..\src\WorldObject.h" />
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\WorldObjectManger.h" />
@@ -37,7 +38,7 @@
     <ProjectGuid>{40943D16-275A-4153-B661-B296AC13E743}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>assignment2</RootNamespace>
-    <ProjectName>assignment3</ProjectName>
+    <ProjectName>assignment4</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

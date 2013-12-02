@@ -52,19 +52,12 @@
 #include "engine.h"
 
 #define CAPTION "Hello New World"
+#define PI 3.14159265359
 
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
 unsigned int FrameCount = 0;
 
-#define VERTICES 0
-#define COLORS 1
-#define PI 3.14159265359
-
-GLuint VaoId, VboId[2];
-GLuint VertexShaderId, FragmentShaderId, ProgramId;
-GLint UboId, UniformId;
-const GLuint UBO_BP = 0;
 /*
 mouse coordinates
 */
@@ -73,261 +66,76 @@ int mx, my, newMx, newMy;
 spherical coordinates of the camera
 */
 float theta, phi;
-/////////////////////////////////////////////////////////////////////// ERRORS
-
-bool isOpenGLError() {
-	bool isError = false;
-	GLenum errCode;
-	const GLubyte *errString;
-	while ((errCode = glGetError()) != GL_NO_ERROR) {
-		isError = true;
-		errString = gluErrorString(errCode);
-		std::cerr << "OpenGL ERROR [" << errString << "]." << std::endl;
-	}
-	return isError;
-}
-
-void checkOpenGLError(std::string error)
-{
-	if (isOpenGLError()) {
-		std::cerr << error << std::endl;
-		exit(EXIT_FAILURE);
-	}
-}
+/* shared matrices bindpoint*/
+const GLuint BINDPOINT = 0;
+/* shared matrices buffer object id*/
+GLuint sharedMatricesBufferObject = 0;
+/**/
 
 /////////////////////////////////////////////////////////////////////// SHADERs
-
-const GLchar* VertexShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 in_Position;\n"
-	"in vec4 in_Color;\n"
-	"out vec4 ex_Color;\n"
-
-	"uniform mat4 ModelMatrix;\n"
-
-	"layout(std140) uniform SharedMatrices\n"
-	"{\n"
-	"	mat4 ViewMatrix;\n"
-	"	mat4 ProjectionMatrix;\n"
-	"};\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * in_Position;\n"
-	"	ex_Color = in_Color;\n"
-	"}\n"
-};
-
-const GLchar* FragmentShader =
-{
-	"#version 330 core\n"
-
-	"in vec4 ex_Color;\n"
-	"out vec4 out_Color;\n"
-
-	"void main(void)\n"
-	"{\n"
-	"	out_Color = ex_Color;\n"
-	"}\n"
-};
-
-void createShaderProgram()
-{
-	VertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(VertexShaderId, 1, &VertexShader, 0);
-	glCompileShader(VertexShaderId);
-
-	FragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(FragmentShaderId, 1, &FragmentShader, 0);
-	glCompileShader(FragmentShaderId);
-
-	ProgramId = glCreateProgram();
-	glAttachShader(ProgramId, VertexShaderId);
-	glAttachShader(ProgramId, FragmentShaderId);
-
-	glBindAttribLocation(ProgramId, VERTICES, "in_Position");
-	glBindAttribLocation(ProgramId, COLORS, "in_Color");
-	glLinkProgram(ProgramId);
-	UniformId = glGetUniformLocation(ProgramId, "ModelMatrix");
-	UboId = glGetUniformBlockIndex(ProgramId, "SharedMatrices");
-	glUniformBlockBinding(ProgramId, UboId, UBO_BP);
-
-	checkOpenGLError("ERROR: Could not create shaders.");
+void createSharedUniformBlocks() {
+	glGenBuffers(1, &sharedMatricesBufferObject);
+	glBindBuffer(GL_UNIFORM_BUFFER, sharedMatricesBufferObject);
+	glBufferData(GL_UNIFORM_BUFFER, sizeof(GLfloat)* 2 * 16, 0, GL_STREAM_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, BINDPOINT, sharedMatricesBufferObject);
 }
 
-void destroyShaderProgram()
-{
-	glUseProgram(0);
-	glDetachShader(ProgramId, VertexShaderId);
-	glDetachShader(ProgramId, FragmentShaderId);
+void createShaderProgram() {
+	createSharedUniformBlocks();
+	ShaderManager* shaderManager = ShaderManager::getInstance();
+	ShaderProgram * myShader = new ShaderProgram();
+	myShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/myVS.glsl");
+	myShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/myFS.glsl");
+	myShader->addAttrib("inPosition",RenderModel::POSITION);
+	myShader->addAttrib("inNormal", RenderModel::NORMAL);
+	myShader->addAttrib("inTex", RenderModel::TEX);
+	myShader->addUniform("Color");
+	myShader->addUniform("ModelMatrix");
+	myShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	myShader->createCompileLink();
+	shaderManager->add("SimpleShader", myShader);
+}
 
-	glDeleteShader(FragmentShaderId);
-	glDeleteShader(VertexShaderId);
-	glDeleteProgram(ProgramId);
-
-	checkOpenGLError("ERROR: Could not destroy shaders.");
+void destroyShaderProgram() {
+	
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
-typedef struct {
-	GLfloat XYZW[4];
-	GLfloat RGBA[4];
-} Vertex;
-
-typedef GLfloat Matrix[16];
-
-const Vertex Vertices[] =
-{
-	{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 0 - FRONT
-	{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 1
-	{ { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 2
-	{ { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 2	
-	{ { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 3
-	{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.0f, 1.0f } }, // 0
-
-	{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 1 - RIGHT
-	{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 5
-	{ { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 6
-	{ { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 6	
-	{ { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 2
-	{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.0f, 0.9f, 0.0f, 1.0f } }, // 1
-
-	{ { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 2 - TOP
-	{ { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 6
-	{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 7
-	{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 7	
-	{ { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 3
-	{ { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.9f, 1.0f } }, // 2
-
-	{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 5 - BACK
-	{ { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 4
-	{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 7
-	{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 7	
-	{ { 1.0f, 1.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 6
-	{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.0f, 0.9f, 0.9f, 1.0f } }, // 5
-
-	{ { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 4 - LEFT
-	{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 0
-	{ { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 3
-	{ { 0.0f, 1.0f, 1.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 3	
-	{ { 0.0f, 1.0f, 0.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 7
-	{ { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.9f, 0.0f, 0.9f, 1.0f } }, // 4
-
-	{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }, // 0 - BOTTOM
-	{ { 0.0f, 0.0f, 0.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }, // 4
-	{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }, // 5
-	{ { 1.0f, 0.0f, 0.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }, // 5	
-	{ { 1.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }, // 1
-	{ { 0.0f, 0.0f, 1.0f, 1.0f }, { 0.9f, 0.9f, 0.0f, 1.0f } }  // 0
-};
-
 void createBufferObjects()
 {
-	glGenVertexArrays(1, &VaoId);
-	glBindVertexArray(VaoId);
-
-	glGenBuffers(2, VboId);
-	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(VERTICES);
-	glVertexAttribPointer(VERTICES, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-	glEnableVertexAttribArray(COLORS);
-	glVertexAttribPointer(COLORS, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)sizeof(Vertices[0].XYZW));
-
-	glBindBuffer(GL_UNIFORM_BUFFER, VboId[1]);
-	glBufferData(GL_UNIFORM_BUFFER, sizeof(Matrix)* 2, 0, GL_STREAM_DRAW);
-	glBindBufferBase(GL_UNIFORM_BUFFER, UBO_BP, VboId[1]);
-
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(COLORS);
-
-	checkOpenGLError("ERROR: Could not create VAOs and VBOs.");
+	
 }
 
 void destroyBufferObjects()
 {
-	glDisableVertexAttribArray(VERTICES);
-	glDisableVertexAttribArray(COLORS);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	glDeleteBuffers(2, VboId);
-	glDeleteVertexArrays(1, &VaoId);
-	checkOpenGLError("ERROR: Could not destroy VAOs and VBOs.");
+ 
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
-const Matrix I = {
-	1.0f, 0.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 0.0f, 1.0f
-};
+void writeSharedMatrices(glm::mat4 view, glm::mat4 projection) {
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 16 * sizeof(GLfloat), glm::value_ptr(view));
+	glBufferSubData(GL_UNIFORM_BUFFER, 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), glm::value_ptr(projection));
+}
 
-const Matrix ModelMatrix = {
-	1.0f, 0.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 1.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f, 1.0f
-}; // Column Major
+void drawScene() {
+	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	shader->bind();
 
-// Eye(5,5,5) Center(0,0,0) Up(0,1,0)
-const Matrix ViewMatrix1 = {
-	0.70f, -0.41f, 0.58f, 0.00f,
-	0.00f, 0.82f, 0.58f, 0.00f,
-	-0.70f, -0.41f, 0.58f, 0.00f,
-	0.00f, 0.00f, -8.70f, 1.00f
-}; // Column Major
-
-// Eye(-5,-5,-5) Center(0,0,0) Up(0,1,0)
-const Matrix ViewMatrix2 = {
-	-0.70f, -0.41f, -0.58f, 0.00f,
-	0.00f, 0.82f, -0.58f, 0.00f,
-	0.70f, -0.41f, -0.58f, 0.00f,
-	0.00f, 0.00f, -8.70f, 1.00f
-}; // Column Major
-
-// Orthographic LeftRight(-2,2) TopBottom(-2,2) NearFar(1,10)
-const Matrix ProjectionMatrix1 = {
-	0.50f, 0.00f, 0.00f, 0.00f,
-	0.00f, 0.50f, 0.00f, 0.00f,
-	0.00f, 0.00f, -0.22f, 0.00f,
-	0.00f, 0.00f, -1.22f, 1.00f
-}; // Column Major
-
-// Perspective Fovy(30) Aspect(640/480) NearZ(1) FarZ(10)
-const Matrix ProjectionMatrix2 = {
-	2.79f, 0.00f, 0.00f, 0.00f,
-	0.00f, 3.73f, 0.00f, 0.00f,
-	0.00f, 0.00f, -1.22f, -1.00f,
-	0.00f, 0.00f, -2.22f, 0.00f
-}; // Column Major
-
-void drawScene()
-{
-	glBindBuffer(GL_UNIFORM_BUFFER, VboId[1]);
+	glm::mat4x4 view = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
+	writeSharedMatrices(view, proj);
 	
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Matrix), ViewMatrix2);
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(Matrix), sizeof(Matrix), ProjectionMatrix2);
-	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	glm::mat4x4 model = glm::mat4(1.0);
+	shader->sendUniformMat4("ModelMatrix",model);
+	
+	glm::vec3 color = glm::vec3(.5f);
+	shader->sendUniformVec3("Color", color);
 
-	glBindVertexArray(VaoId);
-	glUseProgram(ProgramId);
-
-	glUniformMatrix4fv(UniformId, 1, GL_FALSE, I/*ModelMatrix*/);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-
-	glUseProgram(0);
-	glBindVertexArray(0);
-
-	checkOpenGLError("ERROR: Could not draw scene.");
+	RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("Square");
+	rendermodel->drawModel();
+	shader->unbind();
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -391,6 +199,13 @@ void mousePressed(int button, int state, int x, int y) {
 
 /////////////////////////////////////////////////////////////////////// SETUP
 
+void loadModels() {
+	ModelLoader modelLoader;
+	RenderModelManager* renderManager = RenderModelManager::instance();
+	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
+}
+
+
 void setupCallbacks()
 {
 	glutCloseFunc(cleanup);
@@ -452,6 +267,7 @@ void init(int argc, char* argv[])
 	createShaderProgram();
 	createBufferObjects();
 	setupCallbacks();
+	loadModels();
 	theta = 0.0f;
 	phi = 0.0f;
 }

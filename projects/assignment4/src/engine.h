@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include "RenderModel.h"
-#include "uniformsAttribs.h"
 #include "ShaderProgram.h"
 #include "ShaderManager.h"
+#include "RenderModelManager.h"
+#include "ModelLoader.h"

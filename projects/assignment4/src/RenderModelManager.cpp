@@ -1,10 +1,10 @@
 #include "RenderModelManager.h"
 
-RenderModelManager* RenderModelManager::_instance = 0;
+RenderModelManager* RenderModelManager::_instance = nullptr;
 
 RenderModelManager* RenderModelManager::instance()
 {
-	if (_instance = 0) {
+	if (_instance == nullptr) {
 		_instance = new RenderModelManager();
 	}
 	return _instance;

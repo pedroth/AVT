@@ -1,5 +1,4 @@
-#ifndef __SHADER_PROGRAM_H__
-#define __SHADER_PROGRAM_H__
+#pragma once
 
 #include <GL\glew.h>
 
@@ -49,9 +48,9 @@ public:
 	// Returns this program's OpenGL name.
 	GLuint programName();
 	// Sets the current OpenGL shader program to this.
-	void use();
+	void bind();
 	// Clear OpenGL program binding.
-	void removeFromUse();
+	void unbind();
 	// Get a uniform id by uniform name.
 	GLint getUniformId(const std::string &uniformName);
 	void sendUniformMat4(const std::string &uniformName, const glm::mat4x4 &mat);
@@ -62,6 +61,3 @@ private:
 	std::string linkingInfoLog();
 	GLint linkProgram();
 };
-
-
-#endif

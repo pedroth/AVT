@@ -1,6 +1,6 @@
 #include "ShaderManager.h"
 
-ShaderManager* shaderManager = nullptr;
+ShaderManager* ShaderManager::shaderManager = nullptr;
 ShaderManager::ShaderManager() : shaders() { }
 ShaderManager* ShaderManager::getInstance() {
 	if (shaderManager == nullptr)

@@ -1,8 +1,6 @@
 #include "ShaderProgram.h"
 
 #include <iostream>
-
-#include "uniformsAttribs.h"
 #include "utils.h"
 
 
@@ -192,13 +190,13 @@ GLuint ShaderProgram::programName()
 }
 
 
-void ShaderProgram::use()
+void ShaderProgram::bind()
 {
 	glUseProgram(m_programName);
 }
 
 
-void ShaderProgram::removeFromUse()
+void ShaderProgram::unbind()
 {
 	glUseProgram(0);
 }
