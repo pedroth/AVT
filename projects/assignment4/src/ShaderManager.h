@@ -10,7 +10,7 @@ private :
 	static ShaderManager* shaderManager;
 	ShaderManager();
 public:
-	ShaderManager* getInstance();
+	static ShaderManager* getInstance();
 	void add(std::string name, ShaderProgram* shader);
 	ShaderProgram*  get(std::string name);
 };

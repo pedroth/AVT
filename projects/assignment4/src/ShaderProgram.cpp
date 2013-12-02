@@ -27,11 +27,12 @@ ShaderProgram::~ShaderProgram()
 }
 
 
-void ShaderProgram::addShader(GLenum shaderType, const std::string &shaderSource)
+void ShaderProgram::addShader(GLenum shaderType, const std::string &shaderPath)
 {
 	Shader *oldShader = m_shaders[shaderType];
 	if (oldShader != 0)
 		delete oldShader;
+	std::string shaderSource = readFromFile(shaderPath);
 	m_shaders[shaderType] = new Shader(shaderType, shaderSource);
 }
 

@@ -38,7 +38,7 @@ public:
 	ShaderProgram();
 	// Detach shaders, destroy shaders.
 	~ShaderProgram();
-	void addShader(GLenum shaderType, const std::string &shaderSource);
+	void addShader(GLenum shaderType, const std::string &shaderPath);
 	void addAttrib(const std::string &name, GLuint index);
 	void addUniform(const std::string &uniformName);
 	void addUniformBlock(const std::string &blockName, GLuint bindPoint, GLuint bufferID);

@@ -7,3 +7,4 @@
 #include "RenderModel.h"
 #include "uniformsAttribs.h"
 #include "ShaderProgram.h"
+#include "ShaderManager.h"

@@ -29,8 +29,10 @@ public:
 	size_t vertexNum();
 	void vaoName(GLuint vao);
 	GLuint vaoName();
-private:
-	//	bool checkIndexConsistent();
+public:
+	static const GLuint POSITION=0;
+	static const GLuint NORMAL=1;
+	static const GLuint TEX=2;
 };
 
 #endif
