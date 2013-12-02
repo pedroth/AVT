@@ -17,5 +17,5 @@ public:
 	void setPosition(glm::vec3 position);
 	void setScale(glm::vec3 scale);
 	void setMesh(RenderModel* mesh);
-	void draw();
+	void draw(ShaderProgram* shader);
 };
