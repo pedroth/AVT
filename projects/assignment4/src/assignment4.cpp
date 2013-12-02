@@ -49,6 +49,7 @@
 
 #include <GL/glew.h>
 #include <GL/freeglut.h>
+#include "engine.h"
 
 #define CAPTION "Hello New World"
 
@@ -229,7 +230,6 @@ void createBufferObjects()
 	glBindVertexArray(VaoId);
 
 	glGenBuffers(2, VboId);
-
 	glBindBuffer(GL_ARRAY_BUFFER, VboId[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(VERTICES);
