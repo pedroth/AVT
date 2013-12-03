@@ -1,27 +1,16 @@
-#ifndef _SHADERMANAGER_H_
-#define _SHADERMANAGER_H_
+#pragma once
+#include<map>
+#include"engine.h"
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include "ShaderProgram.h"
 
-#include "GL/glew.h"
-#include "GL/freeglut.h"
-
-class ShaderManager{
-private:
-   std::vector<ShaderProgram*> shaderPrograms;
-
+class ShaderManager {
+private :
+	typedef std::map<std::string, ShaderProgram *> shaderMapType;
+	shaderMapType  shaders;
+	static ShaderManager* shaderManager;
+	ShaderManager();
 public:
-   
-   void addShaderProgram(int id, GLenum shaderType, const std::string &shaderSource);
-
-   ShaderProgram* getShaderProgram(int id);
-
-   void removeShaderProgram(int id);
-
-
+	static ShaderManager* getInstance();
+	void add(std::string name, ShaderProgram* shader);
+	ShaderProgram*  get(std::string name);
 };
-
-#endif

@@ -1,16 +1,19 @@
 
 #include "RenderModel.h"
-#include "uniformsAttribs.h"
 #include <iostream>
 
 #include <map>
 
-std::map<std::string, size_t> VertAttrOffsets;
-
 RenderModel::RenderModel(const std::vector<Vertex> &verts, const std::vector<Normal> &norm, const std::vector<TexCoord> &tex) :
 m_vertices(verts), m_normals(norm), m_texCoords(tex),
 m_vaoName(0), m_vertboName(0), m_normboName(0), m_texboName(0)
-{}
+{
+	setupModel();
+}
+RenderModel::~RenderModel()
+{
+	cleanupModel();
+}
 void RenderModel::setupModel()
 {
 	//create vertexArray
@@ -30,18 +33,18 @@ void RenderModel::setupModel()
 	
 	//set attrib pointers
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertboName);
-	glEnableVertexAttribArray(VertexAttribs::Indexes::POSITION);
-	glVertexAttribPointer(VertexAttribs::Indexes::POSITION, 3, GL_FLOAT, GL_FALSE, 
+	glEnableVertexAttribArray(POSITION);
+	glVertexAttribPointer(POSITION, 3, GL_FLOAT, GL_FALSE, 
 		sizeof(Vertex), 0);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, m_normboName);
-	glEnableVertexAttribArray(VertexAttribs::Indexes::NORMAL);
-	glVertexAttribPointer(VertexAttribs::Indexes::NORMAL, 3, GL_FLOAT, GL_FALSE,
+	glEnableVertexAttribArray(NORMAL);
+	glVertexAttribPointer(NORMAL, 3, GL_FLOAT, GL_FALSE,
 		sizeof(Normal), 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_texboName);
-	glEnableVertexAttribArray(VertexAttribs::Indexes::TEXCOORD);
-	glVertexAttribPointer(VertexAttribs::Indexes::TEXCOORD, 2, GL_FLOAT, GL_FALSE,
+	glEnableVertexAttribArray(TEX);
+	glVertexAttribPointer(TEX, 2, GL_FLOAT, GL_FALSE,
 		sizeof(TexCoord), 0);
 
 
@@ -50,9 +53,9 @@ void RenderModel::setupModel()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glDisableVertexAttribArray(VertexAttribs::Indexes::POSITION);
-	glDisableVertexAttribArray(VertexAttribs::Indexes::NORMAL);
-	glDisableVertexAttribArray(VertexAttribs::Indexes::TEXCOORD);
+	glDisableVertexAttribArray(POSITION);
+	glDisableVertexAttribArray(NORMAL);
+	glDisableVertexAttribArray(TEX);
 }
 void RenderModel::drawModel() const
 {

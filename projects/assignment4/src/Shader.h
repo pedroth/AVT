@@ -1,6 +1,4 @@
-
-#ifndef __SHADER_H__
-#define __SHADER_H__
+#pragma once
 
 #include <string>
 #include <GL\glew.h>
@@ -31,4 +29,3 @@ private:
 	std::string m_shaderSource;
 };
 
-#endif

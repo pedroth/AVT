@@ -1,5 +1,4 @@
-#ifndef __SHADER_PROGRAM_H__
-#define __SHADER_PROGRAM_H__
+#pragma once
 
 #include <GL\glew.h>
 
@@ -35,10 +34,10 @@ class ShaderProgram
 	std::map<std::string, UniformBlockData> m_uniformBlocks;
 public:
 	// Create a new OpenGL shader program.
-	ShaderProgram(int id);
+	ShaderProgram();
 	// Detach shaders, destroy shaders.
 	~ShaderProgram();
-	void addShader(GLenum shaderType, const std::string &shaderSource);
+	void addShader(GLenum shaderType, const std::string &shaderPath);
 	void addAttrib(const std::string &name, GLuint index);
 	void addUniform(const std::string &uniformName);
 	void addUniformBlock(const std::string &blockName, GLuint bindPoint, GLuint bufferID);
@@ -56,14 +55,9 @@ public:
 	GLint getUniformId(const std::string &uniformName);
 	void sendUniformMat4(const std::string &uniformName, const glm::mat4x4 &mat);
 	void sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec);
-   int getId();
 private:
 	void displayShaderCompileLog(const std::string &message, const Shader &shader);
 	void displayProgramLinkingLog(const std::string &message);
 	std::string linkingInfoLog();
 	GLint linkProgram();
-   int _id;
 };
-
-
-#endif
