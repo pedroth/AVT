@@ -5,8 +5,8 @@
 
 
 // Creates a new program and its shaders.
-ShaderProgram::ShaderProgram(int id)
-: m_programName(0), m_shaders(), m_uniforms(), m_attribs(), m_uniformBlocks(), _id(id)
+ShaderProgram::ShaderProgram()
+: m_programName(0), m_shaders(), m_uniforms(), m_attribs(), m_uniformBlocks()
 {
 }
 
