@@ -1,6 +1,5 @@
 
 #include "RenderModel.h"
-#include "uniformsAttribs.h"
 #include <iostream>
 
 #include <map>

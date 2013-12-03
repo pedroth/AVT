@@ -65,7 +65,8 @@ int mx, my, newMx, newMy;
 /*
 spherical coordinates of the camera
 */
-float theta, phi;
+float theta, phi, raw;
+glm::vec3 cameraCenter;
 /* shared matrices bindpoint*/
 const GLuint BINDPOINT = 0;
 /* shared matrices buffer object id*/
@@ -119,11 +120,21 @@ void writeSharedMatrices(glm::mat4 view, glm::mat4 projection) {
 	glBufferSubData(GL_UNIFORM_BUFFER, 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), glm::value_ptr(projection));
 }
 
+glm::mat4x4 orbit() {
+	float cosP = cos(phi);
+	float cosT = cos(theta);
+	float sinP = sin(phi);
+	float sinT = sin(theta);
+	glm::vec3 eye(raw * cosP * cosT + cameraCenter.x, raw * cosP * sinT + cameraCenter.y, raw * sinP + cameraCenter.z);
+	glm::vec3 up(-sinP * cosT, -sinP * sinT, cosP);
+	return glm::lookAt(eye, cameraCenter, up);
+}
+
 void drawScene() {
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	shader->bind();
 
-	glm::mat4x4 view = glm::lookAt(glm::vec3(0, 0, 3), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4x4 view = orbit();
 	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
 	writeSharedMatrices(view, proj);
 	
@@ -270,6 +281,8 @@ void init(int argc, char* argv[])
 	loadModels();
 	theta = 0.0f;
 	phi = 0.0f;
+	raw = 3.0f;
+	cameraCenter = glm::vec3(0.0f);
 }
 
 int main(int argc, char* argv[])
