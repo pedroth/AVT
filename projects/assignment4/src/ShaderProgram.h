@@ -35,7 +35,7 @@ class ShaderProgram
 	std::map<std::string, UniformBlockData> m_uniformBlocks;
 public:
 	// Create a new OpenGL shader program.
-	ShaderProgram();
+	ShaderProgram(int id);
 	// Detach shaders, destroy shaders.
 	~ShaderProgram();
 	void addShader(GLenum shaderType, const std::string &shaderSource);
@@ -49,18 +49,20 @@ public:
 	// Returns this program's OpenGL name.
 	GLuint programName();
 	// Sets the current OpenGL shader program to this.
-	void use();
+	void bind();
 	// Clear OpenGL program binding.
-	void removeFromUse();
+	void unbind();
 	// Get a uniform id by uniform name.
 	GLint getUniformId(const std::string &uniformName);
 	void sendUniformMat4(const std::string &uniformName, const glm::mat4x4 &mat);
 	void sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec);
+   int getId();
 private:
 	void displayShaderCompileLog(const std::string &message, const Shader &shader);
 	void displayProgramLinkingLog(const std::string &message);
 	std::string linkingInfoLog();
 	GLint linkProgram();
+   int _id;
 };
 
 

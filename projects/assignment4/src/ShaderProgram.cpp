@@ -7,8 +7,8 @@
 
 
 // Creates a new program and its shaders.
-ShaderProgram::ShaderProgram()
-: m_programName(0), m_shaders(), m_uniforms(), m_attribs(), m_uniformBlocks()
+ShaderProgram::ShaderProgram(int id)
+: m_programName(0), m_shaders(), m_uniforms(), m_attribs(), m_uniformBlocks(), _id(id)
 {
 }
 
@@ -191,13 +191,13 @@ GLuint ShaderProgram::programName()
 }
 
 
-void ShaderProgram::use()
+void ShaderProgram::bind()
 {
 	glUseProgram(m_programName);
 }
 
 
-void ShaderProgram::removeFromUse()
+void ShaderProgram::unbind()
 {
 	glUseProgram(0);
 }
