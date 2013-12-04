@@ -35,6 +35,8 @@ float time;
 std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
+std::string selectedObject[7];
+int selectedObjectIndex = 0;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -173,6 +175,8 @@ void timer(int value)
 }
 
 void mouseMotion(int x, int y)  {
+	WorldObject *selectdObj;
+
 	newMx = x;
 	newMy = y;
 	float dx = newMx - mx;
@@ -186,7 +190,8 @@ void mouseMotion(int x, int y)  {
 	}
 	//move the selected object
 	else{
-		
+		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		selectdObj->translate(glm::vec3(dx, dy, 0));
 	}
 
 	mx = newMx;
@@ -206,6 +211,7 @@ void keyboardKey(unsigned char key, int x, int y) {
 
 	if (key == 's'){
 		selected = !selected;
+		selectedObjectIndex = 0;
 	}
 
 
@@ -215,10 +221,12 @@ void keyboardKey(unsigned char key, int x, int y) {
 void SpecialkeyboardKey(int key, int x, int y){
 	if (selected){
 		if (key == GLUT_KEY_LEFT){
-
+			selectedObjectIndex--;
+			selectedObjectIndex = selectedObjectIndex % 6;
 		}
 		if (key == GLUT_KEY_RIGHT){
-
+			selectedObjectIndex++;
+			selectedObjectIndex = selectedObjectIndex % 6;
 		}
 	}
 
@@ -244,36 +252,43 @@ void loadModels() {
 	aux = new WorldObject(renderManager->getRenderModel("Square"));
 	world->add(aux);
 	tangram->operator[]("Square") = aux;
+	selectedObject[0] = "Square";
 
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
 	world->add(aux);
 	tangram->operator[]("MedTri") = aux;
+	selectedObject[1] = "MedTri";
 
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
 	world->add(aux);
 	tangram->operator[]("BigTri1") = aux;
+	selectedObject[2] = "BigTri1";
 
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
 	world->add(aux);
 	tangram->operator[]("BigTri2") = aux;
+	selectedObject[3] = "BigTri2";
 
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
 	world->add(aux);
 	tangram->operator[]("SmallTri1") = aux;
+	selectedObject[4] = "SmallTri1";
 
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
 	world->add(aux);
 	tangram->operator[]("SmallTri2") = aux;
+	selectedObject[5] = "SmallTri2";
 
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Quad"));
 	world->add(aux);
 	tangram->operator[]("Quad") = aux;
+	selectedObject[6] = "Quad";
 
 	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
