@@ -1,47 +1,3 @@
-///////////////////////////////////////////////////////////////////////
-//
-// Assignment 3 consists in the following:
-//
-// - Create the following changes to your scene, making it fully 3D:
-//   - Extrude your TANs into the 3rd dimension. The TANs should have
-//     slightly different "heights".
-//   - The new faces of each TAN should share the same hue as the 
-//     original top face color but have different levels of saturation 
-//     and brightness (use an external app if needed).
-//   - The shape is now built vertically (i.e. rather than horizontally
-//     as in assignment 2) but still on top of the surface.
-//   - When the TANs join to create your chosen shape, they should not 
-//     be perfectly aligned in the new dimension.
-//
-// - Add the following functionality:
-//   - Create a View Matrix from (eye, center, up) parameters.
-//   - Create an Orthographic Projection Matrix from (left-right, 
-//     bottom-top, near-far) parameters.
-//   - Create a Perspective Projection Matrix from (fovy, aspect,
-//     nearZ, farZ) parameters.
-//   - Implement rotations through quaternions.
-//
-// - Add the following dynamics to the application:
-//   - Create a spherical 3D camera controlled by the mouse allowing to 
-//     visualize the scene through all its angles.
-//   - Change perspective from orthographic to perspective and back as
-//     a response to pressing the key 'p'.
-//   - The scene starts with the 7 TANs in their original square 
-//     configuration, laying flat and horizontally on the surface.
-//   - Each time the 't' key is pressed, one of the TANs will move from 
-//     its resting place to its position in your chosen shape, now 
-//     presented vertically.
-//
-// Further suggestions:
-//   - Use mouse interaction to select which TAN will be next moved 
-//     into place or moved back to its resting position.
-//   - Create an edit mode in which the user can edit the shape in
-//     real-time (e.g. position, rotation, color).
-//   - Allow to load and save the TANGRAM shapes from external files.
-//
-// (c) 2013 by Carlos Martinho
-//
-///////////////////////////////////////////////////////////////////////
 
 #include <iostream>
 #include <sstream>
@@ -75,6 +31,8 @@ GLuint sharedMatricesBufferObject = 0;
 float oldTime;
 float currentTime;
 float time;
+
+bool selected = false;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -198,11 +156,19 @@ void mouseMotion(int x, int y)  {
 	newMx = x;
 	newMy = y;
 	float dx = newMx - mx;
-	float dy =  newMy - my;
-	theta += 2 * PI * (-dx / WinX);
-	phi += 2 * PI * (dy / WinY);
-	//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
-	
+	float dy = newMy - my;
+
+	//move camera
+	if (!selected){	
+		theta += 2 * PI * (-dx / WinX);
+		phi += 2 * PI * (dy / WinY);
+		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
+	}
+	//move the selected object
+	else{
+		
+	}
+
 	mx = newMx;
 	my = newMy;
 }
@@ -212,6 +178,30 @@ void mousePressed(int button, int state, int x, int y) {
 		mx = x;
 		my = y;
 	}
+}
+
+/////////////////////////////////////////////////////////////////////// SCENE OBJECT MANIPULATION
+
+void keyboardKey(unsigned char key, int x, int y) {
+
+	if (key == 's'){
+		selected = !selected;
+	}
+
+
+	
+}
+
+void SpecialkeyboardKey(int key, int x, int y){
+	if (selected){
+		if (key == GLUT_KEY_LEFT){
+
+		}
+		if (key == GLUT_KEY_RIGHT){
+
+		}
+	}
+
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
@@ -252,6 +242,8 @@ void setupCallbacks()
 	glutTimerFunc(0, timer, 0);
 	glutMouseFunc(mousePressed);
 	glutMotionFunc(mouseMotion);
+	glutKeyboardFunc(keyboardKey);
+	glutSpecialFunc(SpecialkeyboardKey);
 }
 
 void setupOpenGL() {
