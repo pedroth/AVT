@@ -92,9 +92,16 @@ void createShaderProgram() {
 	myShader->addAttrib("inTex", RenderModel::TEX);
 	myShader->addUniform("Color");
 	myShader->addUniform("ModelMatrix");
+	myShader->addUniform("LightDirection");
 	myShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
 	myShader->createCompileLink();
 	shaderManager->add("SimpleShader", myShader);
+
+	myShader->bind();
+	glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+	myShader->sendUniformVec3("LightDirection", lightDir);
+	checkOpenGLError("Problem passing LightDirection.");
+	myShader->unbind();
 }
 
 void destroyShaderProgram() {

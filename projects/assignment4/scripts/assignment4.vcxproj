@@ -34,6 +34,10 @@
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\WorldObjectManger.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\shaderSrc\myFS.glsl" />
+    <None Include="..\shaderSrc\myVS.glsl" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40943D16-275A-4153-B661-B296AC13E743}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
