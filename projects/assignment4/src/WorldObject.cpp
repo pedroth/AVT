@@ -1,6 +1,6 @@
 #include "WorldObject.h"
 
-WorldObject::WorldObject(RenderModel* mesh) : mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color(glm::vec3(0.5f)) { }
+WorldObject::WorldObject(RenderModel* mesh) : mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color() { }
 glm::quat WorldObject::getQuaternion() {
 	return quaternion;
 }
@@ -10,7 +10,7 @@ glm::vec3 WorldObject::getPosition() {
 glm::vec3 WorldObject::getScale() {
 	return scale;
 }
-glm::vec3 WorldObject::getColor() {
+ColorMaterial WorldObject::getColor() {
 	return color;
 }
 RenderModel* WorldObject::getMesh() {
@@ -28,8 +28,14 @@ void WorldObject::setScale(glm::vec3 scale) {
 void WorldObject::setMesh(RenderModel* mesh) {
 	this->mesh = mesh;
 }
-void WorldObject::setColor(glm::vec3 color) {
+void WorldObject::setColor(ColorMaterial color) {
 	this->color = color;
+}
+void WorldObject::translate(glm::vec3 translate) {
+	position = position + translate;
+}
+void WorldObject::rotate(glm::quat rotate) {
+	quaternion = rotate  * quaternion;
 }
 glm::mat4x4 WorldObject::getTransformationMatrix() {
 	glm::mat4 rotation = glm::mat4_cast(quaternion);
@@ -37,12 +43,11 @@ glm::mat4x4 WorldObject::getTransformationMatrix() {
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), this->scale);
 	return translate * rotation * scale;
 }
-
 void WorldObject::draw(ShaderProgram* shader) {
 	shader->bind();
 	glm::mat4 transform = getTransformationMatrix();
 	shader->sendUniformMat4("ModelMatrix",transform);
-	shader->sendUniformVec3("Color", this->color);
+	shader->sendUniformVec3("Color", this->color.getColor());
 	mesh->drawModel();
 	shader->unbind();
 }

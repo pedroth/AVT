@@ -158,18 +158,8 @@ void drawScene() {
 
 	glm::mat4x4 view = orbit();
 	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
-	writeSharedMatrices(view, proj);
-	/*
-	glm::mat4x4 model = glm::mat4(1.0);
-	shader->sendUniformMat4("ModelMatrix",model);
-	*/
-	/*
-		glm::vec3 color = glm::vec3(.5f);
-		shader->sendUniformVec3("Color", color);
-	*/
 
-	/*RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("BigTri1");
-	rendermodel->drawModel();*/
+	writeSharedMatrices(view, proj);
 
 	world->draw(shader);
 	shader->unbind();
@@ -236,7 +226,11 @@ void mousePressed(int button, int state, int x, int y) {
 
 /////////////////////////////////////////////////////////////////////// SETUP
 void buildTangram() {
-	
+	std::map<std::string, WorldObject*> tangramObject = *tangram;
+	WorldObject* aux;
+	/* Square */
+	aux = tangramObject["Square"];
+	aux->setColor();
 }
 
 
