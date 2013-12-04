@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SHADERPROGRAM_H_
+#define _SHADERPROGRAM_H_
 
 #include <GL\glew.h>
 
@@ -56,6 +57,7 @@ public:
 	GLint getUniformId(const std::string &uniformName);
 	void sendUniformMat4(const std::string &uniformName, const glm::mat4x4 &mat);
 	void sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec);
+	void sendUniformFloat(const std::string &uniformName, const float &f);
 private:
 	void displayShaderCompileLog(const std::string &message, const Shader &shader);
 	void displayProgramLinkingLog(const std::string &message);
@@ -63,3 +65,5 @@ private:
 	GLint linkProgram();
 	bool uniformExists(std::string uniName);
 };
+
+#endif

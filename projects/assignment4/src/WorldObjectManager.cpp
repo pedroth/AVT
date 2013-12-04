@@ -1,8 +1,9 @@
-#include "WorldObjectManger.h"
+#include "WorldObjectManager.h"
 
 
-WorldObjectManager::WorldObjectManager() : list() {}
-void WorldObjectManager::add(WorldObject* object) {
+WorldObjectManager::WorldObjectManager(){}
+
+void WorldObjectManager::add(WorldObject *object) {
 	list.push_back(object);
 }
 WorldObject* WorldObjectManager::getObject(int index) {

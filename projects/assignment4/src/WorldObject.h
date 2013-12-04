@@ -1,3 +1,6 @@
+#ifndef _WORLDOBJECT_H_
+#define _WORLDOBJECT_H_
+
 #include "engine.h"
 
 class WorldObject  {
@@ -17,5 +20,8 @@ public:
 	void setPosition(glm::vec3 position);
 	void setScale(glm::vec3 scale);
 	void setMesh(RenderModel* mesh);
+	glm::mat4x4 getTransformationMatrix();
 	void draw(ShaderProgram* shader);
 };
+
+#endif
