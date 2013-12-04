@@ -105,7 +105,7 @@ glm::mat4x4 orbit() {
 }
 
 void timeUpdate() {
-	currentTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	currentTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
 	time += (currentTime - oldTime);
 	oldTime = currentTime;
 }
@@ -169,19 +169,23 @@ void mouseMotion(int x, int y)  {
 
 	newMx = x;
 	newMy = y;
-	float dx = newMx - mx;
-	float dy = newMy - my;
+	float dx = (float)(newMx - mx);
+	float dy = (float)(newMy - my);
 
 	//move camera
 	if (!selected){	
-		theta += 2 * PI * (-dx / WinX);
-		phi += 2 * PI * (dy / WinY);
+		theta += 2 * (float)PI * (-dx / WinX);
+		phi += 2 * (float)PI * (dy / WinY);
 		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
 	}
 	//move the selected object
 	else{
+		float step = 2.0f;
+		float x = step * (dy / WinY);
+		float y = step * (dx / WinX);
+
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-		selectdObj->translate(glm::vec3(dx, dy, 0));
+		selectdObj->translate(glm::vec3(x, y, 0));
 	}
 
 	mx = newMx;
@@ -213,10 +217,14 @@ void SpecialkeyboardKey(int key, int x, int y){
 		if (key == GLUT_KEY_LEFT){
 			selectedObjectIndex--;
 			selectedObjectIndex = selectedObjectIndex % 6;
+
+			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
 		}
 		if (key == GLUT_KEY_RIGHT){
 			selectedObjectIndex++;
 			selectedObjectIndex = selectedObjectIndex % 6;
+
+			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
 		}
 	}
 
@@ -224,11 +232,11 @@ void SpecialkeyboardKey(int key, int x, int y){
 
 /////////////////////////////////////////////////////////////////////// SETUP
 void buildTangram() {
-	std::map<std::string, WorldObject*> tangramObject = *tangram;
-	WorldObject* aux;
-	/* Square */
-	aux = tangramObject["Square"];
-	aux->setColor();
+//	std::map<std::string, WorldObject*> tangramObject = *tangram;
+//	WorldObject* aux;
+//	/* Square */
+//	aux = tangramObject["Square"];
+//	aux->setColor();
 }
 
 
@@ -349,14 +357,14 @@ void setupGLUT(int argc, char* argv[])
 void cameraSetup() 
 {
 	theta = 0.0f;
-	phi = 0.0f;
+	phi = (float)PI/4.0f;
 	raw = 3.0f;
 	cameraCenter = glm::vec3(0.0f);
 }
 
 void initTime() 
 {
-	oldTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	oldTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
 	time = 0.0f;
 }
 
