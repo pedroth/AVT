@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\assignment4.cpp" />
+    <ClCompile Include="..\src\ModelLoader.cpp" />
+    <ClCompile Include="..\src\RenderModel.cpp" />
+    <ClCompile Include="..\src\RenderModelManager.cpp" />
+    <ClCompile Include="..\src\Shader.cpp" />
+    <ClCompile Include="..\src\ShaderManager.cpp" />
+    <ClCompile Include="..\src\ShaderProgram.cpp" />
+    <ClCompile Include="..\src\utils.cpp" />
+    <ClCompile Include="..\src\WorldObject.cpp" />
+    <ClCompile Include="..\src\WorldObjectManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\engine.h" />
+    <ClInclude Include="..\src\ModelLoader.h" />
+    <ClInclude Include="..\src\RenderModel.h" />
+    <ClInclude Include="..\src\RenderModelManager.h" />
+    <ClInclude Include="..\src\Shader.h" />
+    <ClInclude Include="..\src\ShaderManager.h" />
+    <ClInclude Include="..\src\ShaderProgram.h" />
+    <ClInclude Include="..\src\WorldObject.h" />
+    <ClInclude Include="..\src\utils.h" />
+    <ClInclude Include="..\src\WorldObjectManger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{830160af-e22d-41fd-811f-c69d6e9f45c8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\shaderSrc\myFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\shaderSrc\myVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+</Project>
