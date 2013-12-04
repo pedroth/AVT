@@ -104,11 +104,34 @@ void createShaderProgram() {
 	myShader->createCompileLink();
 	shaderManager->add("SimpleShader", myShader);
 
-	myShader->bind();
 	glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+	
+	myShader->bind();
 	myShader->sendUniformVec3("LightDirection", lightDir);
 	checkOpenGLError("Problem passing LightDirection.");
 	myShader->unbind();
+
+	ShaderProgram *selectShader = new ShaderProgram();
+	selectShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/selectedVS.glsl");
+	selectShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/selectedFS.glsl");
+	selectShader->addAttrib("inPosition", RenderModel::POSITION);
+	selectShader->addAttrib("inNormal", RenderModel::NORMAL);
+	selectShader->addAttrib("inTex", RenderModel::TEX);
+	selectShader->addUniform("Color");
+	selectShader->addUniform("ModelMatrix");
+	selectShader->addUniform("LightDirection");
+	selectShader->addUniform("Time0_1");
+	selectShader->addUniform("SelectedColor");
+	selectShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	selectShader->createCompileLink();
+	shaderManager->add("SelectedShader", selectShader);
+
+	glm::vec3 selectedColor = glm::vec3(0.8f, 0.0f, 0.8f);
+
+	selectShader->bind();
+	selectShader->sendUniformVec3("LightDirection", lightDir);
+	selectShader->sendUniformVec3("SelectedColor", selectedColor);
+	selectShader->unbind();
 }
 
 void destroyShaderProgram() {
@@ -150,8 +173,17 @@ void timeUpdate() {
 	oldTime = currentTime;
 }
 
+void sendTimeToShaders() {
+	float time0_1 = std::fmod(time, 1.0f);
+	
+	ShaderManager * manager = ShaderManager::getInstance();
+	ShaderProgram * selectedShader = manager->get("SelectedShader");
+	selectedShader->bind();
+	selectedShader->sendUniformFloat("Time0_1",time0_1);
+	selectedShader->unbind();
+}
+
 void drawScene() {
-	timeUpdate();
 
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	shader->bind();
@@ -193,6 +225,8 @@ void display()
 
 void idle()
 {
+	timeUpdate();
+	sendTimeToShaders();
 	glutPostRedisplay();
 }
 
