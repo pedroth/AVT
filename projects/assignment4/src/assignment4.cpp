@@ -203,20 +203,6 @@ void mouseMotion(int x, int y)  {
 	phi += 2 * PI * (dy / WinY);
 	//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
 	
-	if (theta >= 2 * PI){
-		theta = 0;
-	} 
-	if (theta < 0){
-		theta += 2 * PI;
-	}
-
-	if (phi >= 2 * PI){
-		phi = 0;
-	}
-	if (phi < 0){
-		phi += 2 * PI;
-	}
-
 	mx = newMx;
 	my = newMy;
 }
