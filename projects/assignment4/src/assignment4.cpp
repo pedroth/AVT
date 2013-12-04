@@ -31,6 +31,8 @@ GLuint sharedMatricesBufferObject = 0;
 float oldTime;
 float currentTime;
 float time;
+/* map of tangram objects */
+std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
 
@@ -55,9 +57,16 @@ void createShaderProgram() {
 	myShader->addAttrib("inTex", RenderModel::TEX);
 	myShader->addUniform("Color");
 	myShader->addUniform("ModelMatrix");
+	myShader->addUniform("LightDirection");
 	myShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
 	myShader->createCompileLink();
 	shaderManager->add("SimpleShader", myShader);
+
+	myShader->bind();
+	glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+	myShader->sendUniformVec3("LightDirection", lightDir);
+	checkOpenGLError("Problem passing LightDirection.");
+	myShader->unbind();
 }
 
 void destroyShaderProgram() {
@@ -93,22 +102,33 @@ glm::mat4x4 orbit() {
 	return glm::lookAt(eye, cameraCenter, up);
 }
 
+void timeUpdate() {
+	currentTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	time += (currentTime - oldTime);
+	oldTime = currentTime;
+}
+
 void drawScene() {
+	timeUpdate();
+
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	shader->bind();
 
 	glm::mat4x4 view = orbit();
 	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
 	writeSharedMatrices(view, proj);
-	
+	/*
 	glm::mat4x4 model = glm::mat4(1.0);
 	shader->sendUniformMat4("ModelMatrix",model);
-	
-	glm::vec3 color = glm::vec3(.5f);
-	shader->sendUniformVec3("Color", color);
+	*/
+	/*
+		glm::vec3 color = glm::vec3(.5f);
+		shader->sendUniformVec3("Color", color);
+	*/
 
 	/*RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("BigTri1");
 	rendermodel->drawModel();*/
+
 	world->draw(shader);
 	shader->unbind();
 }
@@ -205,31 +225,60 @@ void SpecialkeyboardKey(int key, int x, int y){
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
+void buildTangram() {
+	
+}
+
 
 void loadModels() {
 	ModelLoader modelLoader;
+	
+	tangram = new std::map<std::string, WorldObject*>();
+
+	WorldObject * aux;
+	std::string name;
 
 	RenderModelManager* renderManager = RenderModelManager::instance();
+	
 	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("Square")));
+	aux = new WorldObject(renderManager->getRenderModel("Square"));
+	world->add(aux);
+	tangram->operator[]("Square") = aux;
 
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("MedTri")));
+	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
+	world->add(aux);
+	tangram->operator[]("MedTri") = aux;
 
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("BigTri1")));
+	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
+	world->add(aux);
+	tangram->operator[]("BigTri1") = aux;
 
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("BigTri2")));
+	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
+	world->add(aux);
+	tangram->operator[]("BigTri2") = aux;
 
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("SmallTri1")));
+	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
+	world->add(aux);
+	tangram->operator[]("SmallTri1") = aux;
 
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("SmallTri2")));
+	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
+	world->add(aux);
+	tangram->operator[]("SmallTri2") = aux;
 
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
-	world->add(new WorldObject(renderManager->getRenderModel("Quad")));
+	aux = new WorldObject(renderManager->getRenderModel("Quad"));
+	world->add(aux);
+	tangram->operator[]("Quad") = aux;
+
+	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
+	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
+	world->add(aux);
+	tangram->operator[]("BackPlane") = aux;
 }
 
 
@@ -311,7 +360,9 @@ void init(int argc, char* argv[])
 	createBufferObjects();
 	setupCallbacks();
 	loadModels();
+	buildTangram();
 	cameraSetup();
+	initTime();
 }
 
 int main(int argc, char* argv[])

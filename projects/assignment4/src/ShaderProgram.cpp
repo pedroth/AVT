@@ -107,6 +107,10 @@ void ShaderProgram::createCompileLink()
 		const std::string &uniName = it->second.name;
 		GLint loc = glGetUniformLocation(m_programName, uniName.c_str());
 		it->second.id = loc;
+
+		if (loc == -1) {
+			std::cerr << "[Warning] Uniform not found: '" << uniName << "'" << std::endl;
+		}
 	}
 
 	checkOpenGLError("Error getting unfiorm locations.");
@@ -171,6 +175,8 @@ GLint ShaderProgram::getUniformId(const std::string &uniformName)
 
 void ShaderProgram::sendUniformMat4(const std::string &uniformName, const glm::mat4x4 &mat)
 {
+	if (!uniformExists(uniformName))
+		return;
 	GLint uniformId = m_uniforms[uniformName].id;
 	glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(mat));
 }
@@ -178,6 +184,8 @@ void ShaderProgram::sendUniformMat4(const std::string &uniformName, const glm::m
 
 void ShaderProgram::sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec)
 {
+	if (!uniformExists(uniformName))
+		return;
 	GLint uniformId = m_uniforms[uniformName].id;
 	glUniform3f(uniformId, vec.x, vec.y, vec.z);
 }
@@ -205,4 +213,15 @@ void ShaderProgram::bind()
 void ShaderProgram::unbind()
 {
 	glUseProgram(0);
+}
+
+bool ShaderProgram::uniformExists(std::string uniName)
+{
+	uniforms_type::iterator it = m_uniforms.find(uniName);
+	if (it == m_uniforms.end())
+		return false;
+	if ((it->second).id == -1)
+		return false;
+
+	return true;
 }

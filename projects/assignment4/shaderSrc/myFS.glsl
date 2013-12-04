@@ -6,6 +6,6 @@ out vec4 outColor;
 void main(void)
 {
 
-outColor = vec4(exColor,1.0f);
+	outColor = vec4(exColor,1.0f);
 
 }

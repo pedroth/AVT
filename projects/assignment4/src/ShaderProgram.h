@@ -31,7 +31,8 @@ class ShaderProgram
 	GLuint m_programName;
 	std::map<GLenum, Shader *> m_shaders;
 	std::map<std::string, AttribData> m_attribs;
-	std::map<std::string, UniformData> m_uniforms;
+	typedef std::map<std::string, UniformData> uniforms_type;
+	uniforms_type m_uniforms;
 	std::map<std::string, UniformBlockData> m_uniformBlocks;
 public:
 	// Create a new OpenGL shader program.
@@ -62,6 +63,7 @@ private:
 	void displayProgramLinkingLog(const std::string &message);
 	std::string linkingInfoLog();
 	GLint linkProgram();
+	bool uniformExists(std::string uniName);
 };
 
 #endif
