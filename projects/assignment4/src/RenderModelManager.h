@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _RENDERMODELMANAGER_H_
+#define _RENDERMODELMANAGER_H_
 
 #include <string>
 #include <map>
@@ -22,3 +23,5 @@ public:
 
 	~RenderModelManager();
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _WORLDOBJECT_H_
+#define _WORLDOBJECT_H_
+
 #include "engine.h"
 
 class WorldObject  {
@@ -19,3 +22,5 @@ public:
 	void setMesh(RenderModel* mesh);
 	void draw(ShaderProgram* shader);
 };
+
+#endif

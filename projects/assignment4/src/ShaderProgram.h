@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _SHADERPROGRAM_H_
+#define _SHADERPROGRAM_H_
 
 #include <GL\glew.h>
 
@@ -61,3 +62,5 @@ private:
 	std::string linkingInfoLog();
 	GLint linkProgram();
 };
+
+#endif

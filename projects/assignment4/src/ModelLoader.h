@@ -1,3 +1,6 @@
+#ifndef _RENDERMODEL_H_
+#define _RENDERMODEL_H_
+
 #include "RenderModel.h"
 
 class ModelLoader {
@@ -25,3 +28,5 @@ public:
 	RenderModel *loadModel(const std::string &pathString);
 	void cleanup();
 };
+
+#endif

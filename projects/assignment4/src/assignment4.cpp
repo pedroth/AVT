@@ -47,9 +47,9 @@
 #include <sstream>
 #include <string>
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
 #include "engine.h"
+
+#include "WorldObjectManager.h"
 
 #define CAPTION "Hello New World"
 #define PI 3.14159265359
@@ -72,6 +72,8 @@ const GLuint BINDPOINT = 0;
 /* shared matrices buffer object id*/
 GLuint sharedMatricesBufferObject = 0;
 /**/
+
+WorldObjectManager *world = new WorldObjectManager();
 
 /////////////////////////////////////////////////////////////////////// SHADERs
 void createSharedUniformBlocks() {
@@ -144,8 +146,9 @@ void drawScene() {
 	glm::vec3 color = glm::vec3(.5f);
 	shader->sendUniformVec3("Color", color);
 
-	RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("BigTri1");
-	rendermodel->drawModel();
+	/*RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("BigTri1");
+	rendermodel->drawModel();*/
+	world->draw(shader);
 	shader->unbind();
 }
 
@@ -212,14 +215,28 @@ void mousePressed(int button, int state, int x, int y) {
 
 void loadModels() {
 	ModelLoader modelLoader;
+
 	RenderModelManager* renderManager = RenderModelManager::instance();
 	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("Square")));
+
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("MedTri")));
+
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("BigTri1")));
+
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("BigTri2")));
+
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("SmallTri1")));
+
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("SmallTri2")));
+
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
+	world->add(new WorldObject(renderManager->getRenderModel("Quad")));
 }
 
 
