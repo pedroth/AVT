@@ -27,6 +27,7 @@ void WorldObject::setMesh(RenderModel* mesh) {
 }
 void WorldObject::draw(ShaderProgram* shader) {
 	shader->bind();
+	//glUniformMatrix4fv(*_uniformId, 1, GL_TRUE, ModelMatrix);
 	mesh->drawModel();
 	shader->unbind();
 }

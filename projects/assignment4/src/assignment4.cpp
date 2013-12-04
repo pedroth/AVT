@@ -144,7 +144,7 @@ void drawScene() {
 	glm::vec3 color = glm::vec3(.5f);
 	shader->sendUniformVec3("Color", color);
 
-	RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("Square");
+	RenderModel* rendermodel = RenderModelManager::instance()->getRenderModel("BigTri1");
 	rendermodel->drawModel();
 	shader->unbind();
 }
@@ -214,6 +214,12 @@ void loadModels() {
 	ModelLoader modelLoader;
 	RenderModelManager* renderManager = RenderModelManager::instance();
 	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
+	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
+	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
+	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
+	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
+	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
+	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
 }
 
 
