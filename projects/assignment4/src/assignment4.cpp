@@ -71,7 +71,10 @@ glm::vec3 cameraCenter;
 const GLuint BINDPOINT = 0;
 /* shared matrices buffer object id*/
 GLuint sharedMatricesBufferObject = 0;
-/**/
+/* time counter vars */
+float oldTime;
+float currentTime;
+float time;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -293,6 +296,20 @@ void setupGLUT(int argc, char* argv[])
 	}
 }
 
+void cameraSetup() 
+{
+	theta = 0.0f;
+	phi = 0.0f;
+	raw = 3.0f;
+	cameraCenter = glm::vec3(0.0f);
+}
+
+void initTime() 
+{
+	oldTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	time = 0.0f;
+}
+
 void init(int argc, char* argv[])
 {
 	setupGLUT(argc, argv);
@@ -302,10 +319,7 @@ void init(int argc, char* argv[])
 	createBufferObjects();
 	setupCallbacks();
 	loadModels();
-	theta = 0.0f;
-	phi = 0.0f;
-	raw = 3.0f;
-	cameraCenter = glm::vec3(0.0f);
+	cameraSetup();
 }
 
 int main(int argc, char* argv[])
