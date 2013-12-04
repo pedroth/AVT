@@ -1,6 +1,6 @@
 #include "WorldObject.h"
 
-WorldObject::WorldObject(RenderModel* mesh): mesh(mesh) { }
+WorldObject::WorldObject(RenderModel* mesh) : mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)) { }
 glm::quat WorldObject::getQuaternion() {
 	return quaternion;
 }
