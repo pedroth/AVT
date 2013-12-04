@@ -11,6 +11,7 @@
     <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\WorldObject.cpp" />
     <ClCompile Include="..\src\WorldObjectManager.cpp" />
+    <ClCompile Include="..\src\ColorMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -22,7 +23,8 @@
     <ClInclude Include="..\src\ShaderProgram.h" />
     <ClInclude Include="..\src\WorldObject.h" />
     <ClInclude Include="..\src\utils.h" />
-    <ClInclude Include="..\src\WorldObjectManger.h" />
+    <ClInclude Include="..\src\WorldObjectManager.h" />
+    <ClInclude Include="..\src\ColorMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
