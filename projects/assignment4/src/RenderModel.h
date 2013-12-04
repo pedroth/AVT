@@ -1,4 +1,3 @@
-
 #ifndef __RENDERMODEL_H__
 #define __RENDERMODEL_H__
 

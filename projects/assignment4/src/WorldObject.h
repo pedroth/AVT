@@ -1,3 +1,6 @@
+#ifndef _WORLDOBJECT_H_
+#define _WORLDOBJECT_H_
+
 #include "engine.h"
 
 class WorldObject  {
@@ -20,3 +23,5 @@ public:
 	glm::mat4x4 getTransformationMatrix();
 	void draw(ShaderProgram* shader);
 };
+
+#endif
