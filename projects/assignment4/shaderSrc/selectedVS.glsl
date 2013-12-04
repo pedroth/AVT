@@ -16,6 +16,8 @@ layout(std140) uniform SharedMatrices {
 	mat4 ProjectionMatrix;
 };
 
+const float PI = 3.14159265359;
+
 void main(void) {
 	vec4 viewNormal = ViewMatrix * ModelMatrix * vec4(inNormal,0.0);
 	vec3 N = normalize(viewNormal.xyz);
@@ -25,7 +27,8 @@ void main(void) {
 	float NdotL = dot(N,L);
 	float diffInten = max(NdotL,0.0);
 
-	vec3 currColor = mix(Color,SelectedColor,Time0_1);
+	float factor = 0.7 + 0.3*cos(2*PI*Time0_1);
+	vec3 currColor = mix(Color,SelectedColor,factor);
 
 	exColor = diffInten * currColor;
 

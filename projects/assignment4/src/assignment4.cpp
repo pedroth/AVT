@@ -35,8 +35,9 @@ float time;
 std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
-std::string selectedObject[7];
+std::vector<std::string> selectedObject;
 int selectedObjectIndex = 0;
+int lastSelectObjectIndex = 0;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -143,18 +144,16 @@ void sendTimeToShaders() {
 	selectedShader->unbind();
 }
 
-void drawScene() {
 
-	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
-	shader->bind();
+
+void drawScene() {
 
 	glm::mat4x4 view = orbit();
 	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
-
 	writeSharedMatrices(view, proj);
 
+	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	world->draw(shader);
-	shader->unbind();
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -234,12 +233,23 @@ void mousePressed(int button, int state, int x, int y) {
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE OBJECT MANIPULATION
-
+void changeSelectedObjectShader()
+{
+	world->setObjectShader(selectedObject[lastSelectObjectIndex], 0);
+	if (selected) {
+		ShaderManager *manager = ShaderManager::getInstance();
+		ShaderProgram *selectedShader = manager->get("SelectedShader");
+		world->setObjectShader(selectedObject[selectedObjectIndex], selectedShader);
+	}
+}
 void keyboardKey(unsigned char key, int x, int y) {
 
 	if (key == 's'){
 		selected = !selected;
+		lastSelectObjectIndex = selectedObjectIndex;
 		selectedObjectIndex = 0;
+
+		changeSelectedObjectShader();
 	}
 
 
@@ -249,16 +259,22 @@ void keyboardKey(unsigned char key, int x, int y) {
 void SpecialkeyboardKey(int key, int x, int y){
 	if (selected){
 		if (key == GLUT_KEY_LEFT){
+			lastSelectObjectIndex = selectedObjectIndex;
 			selectedObjectIndex--;
-			selectedObjectIndex = selectedObjectIndex % 6;
+			selectedObjectIndex = positiveModulo(selectedObjectIndex,selectedObject.size());
 
 			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+
+			changeSelectedObjectShader();
 		}
 		if (key == GLUT_KEY_RIGHT){
+			lastSelectObjectIndex = selectedObjectIndex;
 			selectedObjectIndex++;
-			selectedObjectIndex = selectedObjectIndex % 6;
+			selectedObjectIndex = selectedObjectIndex % selectedObject.size();
 
 			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+
+			changeSelectedObjectShader();
 		}
 	}
 
@@ -286,49 +302,49 @@ void loadModels() {
 	
 	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Square"));
-	world->add(aux);
+	world->add("Square",aux);
 	tangram->operator[]("Square") = aux;
-	selectedObject[0] = "Square";
+	selectedObject.push_back("Square");
 
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
-	world->add(aux);
+	world->add("MedTri", aux);
 	tangram->operator[]("MedTri") = aux;
-	selectedObject[1] = "MedTri";
+	selectedObject.push_back("MedTri");
 
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
-	world->add(aux);
+	world->add("BigTri1", aux);
 	tangram->operator[]("BigTri1") = aux;
-	selectedObject[2] = "BigTri1";
+	selectedObject.push_back("BigTri1");
 
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
-	world->add(aux);
+	world->add("BigTri2", aux);
 	tangram->operator[]("BigTri2") = aux;
-	selectedObject[3] = "BigTri2";
+	selectedObject.push_back("BigTri2");
 
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
-	world->add(aux);
+	world->add("SmallTri1", aux);
 	tangram->operator[]("SmallTri1") = aux;
-	selectedObject[4] = "SmallTri1";
+	selectedObject.push_back("SmallTri1");
 
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
-	world->add(aux);
+	world->add("SmallTri2", aux);
 	tangram->operator[]("SmallTri2") = aux;
-	selectedObject[5] = "SmallTri2";
+	selectedObject.push_back("SmallTri2");
 
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Quad"));
-	world->add(aux);
+	world->add("Quad", aux);
 	tangram->operator[]("Quad") = aux;
-	selectedObject[6] = "Quad";
+	selectedObject.push_back("Quad");
 
 	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
-	world->add(aux);
+	world->add("BackPlane", aux);
 	tangram->operator[]("BackPlane") = aux;
 }
 
