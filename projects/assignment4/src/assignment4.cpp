@@ -210,12 +210,34 @@ void mouseMotion(int x, int y)  {
 		theta += 2 * (float)PI * (-dx / WinX);
 		phi += 2 * (float)PI * (dy / WinY);
 		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
+
+		theta = (float)fmod(theta, (float)2 * PI);
+		phi = (float)fmod(phi, (float)2 * PI);
 	}
 	//move the selected object
 	else{
 		float step = 2.0f;
-		float x = step * (dy / WinY);
-		float y = step * (dx / WinX);
+		float x, y;
+
+		if (theta > 7.0f / 4.0f * (float)PI || theta <= 1.0f / 4.0f * (float)PI){
+			x = step * (dy / WinY);
+			y = step * (dx / WinX);
+		}
+		else if (theta > 1.0f / 4.0f * (float)PI && theta <= 3.0f / 4.0f * (float)PI){
+			x = -step * (dx / WinX);
+			y = step * (dy / WinY); 
+		}
+		else if (theta > 3.0f / 4.0f * (float)PI && theta <= 5.0f / 4.0f * (float)PI){
+			x = -step * (dy / WinY);
+			y = -step * (dx / WinX);
+		}
+		else if (theta > 5.0f / 4.0f * (float)PI && theta <= 7.0f / 4.0f * (float)PI){
+			x = step * (dx / WinX);
+			y = -step * (dy / WinY);
+		}
+		else{
+			std::cerr << "Error on move objects function" << std::endl;
+		}
 
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
 		selectdObj->translate(glm::vec3(x, y, 0));

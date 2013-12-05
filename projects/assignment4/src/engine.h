@@ -10,3 +10,4 @@
 #include "RenderModelManager.h"
 #include "ModelLoader.h"
 #include "utils.h"
+#include <cmath>
