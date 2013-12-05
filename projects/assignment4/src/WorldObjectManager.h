@@ -4,14 +4,23 @@
 #include "engine.h"
 #include "WorldObject.h"
 #include<iostream>
+#include <map>
 
 class WorldObjectManager {
 private:
-	std::vector<WorldObject*> list;
+	struct WOInfo {
+		WorldObject *object;
+		ShaderProgram *shader;
+		WOInfo();
+		WOInfo(WorldObject *obj);
+	};
+	typedef std::map<std::string, WOInfo> objList_type;
+	objList_type list;
 public:
 	WorldObjectManager();
-	void add(WorldObject* object);
-	WorldObject* getObject(int index);
+	void add(std::string name, WorldObject* object);
+	WorldObject* getObject(std::string name);
+	void setObjectShader(std::string name, ShaderProgram *shader);
 	void draw(ShaderProgram* shader);
 };
 

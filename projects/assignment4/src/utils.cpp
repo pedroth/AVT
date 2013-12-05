@@ -11,6 +11,10 @@ float deg2Rad(float degrees)
 	return (degrees / 180.0f) * PI_CONSTANT;
 }
 
+int positiveModulo(int i, int n) {
+	return (i % n + n) % n;
+}
+
 
 std::string readFromFile(const std::string &filePath)
 {

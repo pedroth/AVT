@@ -39,6 +39,8 @@
   <ItemGroup>
     <None Include="..\shaderSrc\myFS.glsl" />
     <None Include="..\shaderSrc\myVS.glsl" />
+    <None Include="..\shaderSrc\selectedFS.glsl" />
+    <None Include="..\shaderSrc\selectedVS.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40943D16-275A-4153-B661-B296AC13E743}</ProjectGuid>

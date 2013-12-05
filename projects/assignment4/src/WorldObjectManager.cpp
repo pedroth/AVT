@@ -3,14 +3,34 @@
 
 WorldObjectManager::WorldObjectManager(){}
 
-void WorldObjectManager::add(WorldObject *object) {
-	list.push_back(object);
+void WorldObjectManager::add(std::string name, WorldObject *object) {
+	list[name] = WOInfo(object);
 }
-WorldObject* WorldObjectManager::getObject(int index) {
-	return list.at(index);
+WorldObject* WorldObjectManager::getObject(std::string name) {
+	assert(list.find(name) != list.end());
+	return (list.find(name))->second.object;
 }
 void WorldObjectManager::draw(ShaderProgram* shader) {
-	for (std::vector<WorldObject*>::iterator it = list.begin(); it != list.end(); ++it) {
-		(*it)->draw(shader);
+	for (objList_type::iterator it = list.begin(); it != list.end(); ++it) {
+		WOInfo info = it->second;
+		if (info.shader) {
+			info.object->draw(info.shader);
+		}
+		else {
+			info.object->draw(shader);
+		}
 	}
 }
+
+void WorldObjectManager::setObjectShader(std::string name, ShaderProgram *shader)
+{
+	assert(list.find(name) != list.end());
+	list[name].shader = shader;
+}
+
+WorldObjectManager::WOInfo::WOInfo(WorldObject *obj)
+: object(obj), shader(0)
+{}
+WorldObjectManager::WOInfo::WOInfo()
+: object(), shader(0)
+{}

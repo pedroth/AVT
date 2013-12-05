@@ -258,42 +258,42 @@ void loadModels() {
 	
 	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Square"));
-	world->add(aux);
+	world->add("Square",aux);
 	tangram->operator[]("Square") = aux;
 
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
-	world->add(aux);
+	world->add("MedTri",aux);
 	tangram->operator[]("MedTri") = aux;
 
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
-	world->add(aux);
+	world->add("BigTri1",aux);
 	tangram->operator[]("BigTri1") = aux;
 
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
-	world->add(aux);
+	world->add("BigTri2", aux);
 	tangram->operator[]("BigTri2") = aux;
 
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
-	world->add(aux);
+	world->add("SmallTri1",aux);
 	tangram->operator[]("SmallTri1") = aux;
 
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
-	world->add(aux);
+	world->add("SmallTri2",aux);
 	tangram->operator[]("SmallTri2") = aux;
 
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Quad"));
-	world->add(aux);
+	world->add("Quad", aux);
 	tangram->operator[]("Quad") = aux;
 
 	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
-	world->add(aux);
+	world->add("BackPlane",aux);
 	tangram->operator[]("BackPlane") = aux;
 }
 

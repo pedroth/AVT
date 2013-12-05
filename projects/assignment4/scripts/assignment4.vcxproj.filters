@@ -29,6 +29,7 @@
   <ItemGroup>
     <Filter Include="Shaders">
       <UniqueIdentifier>{830160af-e22d-41fd-811f-c69d6e9f45c8}</UniqueIdentifier>
+      <Extensions>.glsl</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +37,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\shaderSrc\myVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\shaderSrc\selectedVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\shaderSrc\selectedFS.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
