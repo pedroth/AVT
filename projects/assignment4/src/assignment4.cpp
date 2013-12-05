@@ -35,6 +35,9 @@ float time;
 std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
+std::vector<std::string> selectedObject;
+int selectedObjectIndex = 0;
+int lastSelectObjectIndex = 0;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -52,7 +55,7 @@ void createShaderProgram() {
 	ShaderProgram * myShader = new ShaderProgram();
 	myShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/myVS.glsl");
 	myShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/myFS.glsl");
-	myShader->addAttrib("inPosition",RenderModel::POSITION);
+	myShader->addAttrib("inPosition", RenderModel::POSITION);
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
 	myShader->addUniform("Color");
@@ -62,27 +65,50 @@ void createShaderProgram() {
 	myShader->createCompileLink();
 	shaderManager->add("SimpleShader", myShader);
 
-	myShader->bind();
 	glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+
+	myShader->bind();
 	myShader->sendUniformVec3("LightDirection", lightDir);
 	checkOpenGLError("Problem passing LightDirection.");
 	myShader->unbind();
+
+	ShaderProgram *selectShader = new ShaderProgram();
+	selectShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/selectedVS.glsl");
+	selectShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/selectedFS.glsl");
+	selectShader->addAttrib("inPosition", RenderModel::POSITION);
+	selectShader->addAttrib("inNormal", RenderModel::NORMAL);
+	selectShader->addAttrib("inTex", RenderModel::TEX);
+	selectShader->addUniform("Color");
+	selectShader->addUniform("ModelMatrix");
+	selectShader->addUniform("LightDirection");
+	selectShader->addUniform("Time0_1");
+	selectShader->addUniform("SelectedColor");
+	selectShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	selectShader->createCompileLink();
+	shaderManager->add("SelectedShader", selectShader);
+
+	glm::vec3 selectedColor = glm::vec3(0.8f, 0.0f, 0.8f);
+
+	selectShader->bind();
+	selectShader->sendUniformVec3("LightDirection", lightDir);
+	selectShader->sendUniformVec3("SelectedColor", selectedColor);
+	selectShader->unbind();
 }
 
 void destroyShaderProgram() {
-	
+
 }
 
 /////////////////////////////////////////////////////////////////////// VAOs & VBOs
 
 void createBufferObjects()
 {
-	
+
 }
 
 void destroyBufferObjects()
 {
- 
+
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE
@@ -103,24 +129,31 @@ glm::mat4x4 orbit() {
 }
 
 void timeUpdate() {
-	currentTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	currentTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
 	time += (currentTime - oldTime);
 	oldTime = currentTime;
 }
 
-void drawScene() {
-	timeUpdate();
+void sendTimeToShaders() {
+	float time0_1 = std::fmod(time, 1.0f);
 
-	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
-	shader->bind();
+	ShaderManager * manager = ShaderManager::getInstance();
+	ShaderProgram * selectedShader = manager->get("SelectedShader");
+	selectedShader->bind();
+	selectedShader->sendUniformFloat("Time0_1", time0_1);
+	selectedShader->unbind();
+}
+
+
+
+void drawScene() {
 
 	glm::mat4x4 view = orbit();
 	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
-
 	writeSharedMatrices(view, proj);
 
+	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	world->draw(shader);
-	shader->unbind();
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -141,6 +174,8 @@ void display()
 
 void idle()
 {
+	timeUpdate();
+	sendTimeToShaders();
 	glutPostRedisplay();
 }
 
@@ -163,20 +198,49 @@ void timer(int value)
 }
 
 void mouseMotion(int x, int y)  {
+	WorldObject *selectdObj;
+
 	newMx = x;
 	newMy = y;
-	float dx = newMx - mx;
-	float dy = newMy - my;
+	float dx = (float)(newMx - mx);
+	float dy = (float)(newMy - my);
 
 	//move camera
-	if (!selected){	
-		theta += 2 * PI * (-dx / WinX);
-		phi += 2 * PI * (dy / WinY);
+	if (!selected){
+		theta += 2 * (float)PI * (-dx / WinX);
+		phi += 2 * (float)PI * (dy / WinY);
 		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
+
+		theta = (float)fmod(theta, (float)2 * PI);
+		phi = (float)fmod(phi, (float)2 * PI);
 	}
 	//move the selected object
 	else{
-		
+		float step = 2.0f;
+		float x, y;
+
+		if (theta > 7.0f / 4.0f * (float)PI || theta <= 1.0f / 4.0f * (float)PI){
+			x = step * (dy / WinY);
+			y = step * (dx / WinX);
+		}
+		else if (theta > 1.0f / 4.0f * (float)PI && theta <= 3.0f / 4.0f * (float)PI){
+			x = -step * (dx / WinX);
+			y = step * (dy / WinY);
+		}
+		else if (theta > 3.0f / 4.0f * (float)PI && theta <= 5.0f / 4.0f * (float)PI){
+			x = -step * (dy / WinY);
+			y = -step * (dx / WinX);
+		}
+		else if (theta > 5.0f / 4.0f * (float)PI && theta <= 7.0f / 4.0f * (float)PI){
+			x = step * (dx / WinX);
+			y = -step * (dy / WinY);
+		}
+		else{
+			std::cerr << "Error on move objects function" << std::endl;
+		}
+
+		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		selectdObj->translate(glm::vec3(x, y, 0));
 	}
 
 	mx = newMx;
@@ -191,24 +255,48 @@ void mousePressed(int button, int state, int x, int y) {
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE OBJECT MANIPULATION
-
+void changeSelectedObjectShader()
+{
+	world->setObjectShader(selectedObject[lastSelectObjectIndex], 0);
+	if (selected) {
+		ShaderManager *manager = ShaderManager::getInstance();
+		ShaderProgram *selectedShader = manager->get("SelectedShader");
+		world->setObjectShader(selectedObject[selectedObjectIndex], selectedShader);
+	}
+}
 void keyboardKey(unsigned char key, int x, int y) {
 
 	if (key == 's'){
 		selected = !selected;
+		lastSelectObjectIndex = selectedObjectIndex;
+		selectedObjectIndex = 0;
+
+		changeSelectedObjectShader();
 	}
 
 
-	
+
 }
 
 void SpecialkeyboardKey(int key, int x, int y){
 	if (selected){
 		if (key == GLUT_KEY_LEFT){
+			lastSelectObjectIndex = selectedObjectIndex;
+			selectedObjectIndex--;
+			selectedObjectIndex = positiveModulo(selectedObjectIndex, selectedObject.size());
 
+			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+
+			changeSelectedObjectShader();
 		}
 		if (key == GLUT_KEY_RIGHT){
+			lastSelectObjectIndex = selectedObjectIndex;
+			selectedObjectIndex++;
+			selectedObjectIndex = selectedObjectIndex % selectedObject.size();
 
+			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+
+			changeSelectedObjectShader();
 		}
 	}
 
@@ -220,12 +308,12 @@ void buildTangram() {
 	WorldObject* aux;
 	/* Square */
 	aux = tangramObject["Square"];
-	aux->setColor(ColorMaterial(glm::vec3(1.0f,0.5f,0.0f)));
-	aux->setPosition(glm::vec3(2.0f,0.0f,0.0f));
+	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.5f, 0.0f)));
+	aux->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
 	/*Medium Triangle*/
 	aux = tangramObject["MedTri"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 1.0f, 0.0f)));
-	aux->setPosition(glm::vec3(3/8,-3/8,0.0f));
+	aux->setPosition(glm::vec3(3 / 8, -3 / 8, 0.0f));
 	/* Big Triangle 1 */
 	aux = tangramObject["BigTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 0.0f)));
@@ -242,58 +330,64 @@ void buildTangram() {
 	aux = tangramObject["Quad"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 0.0f)));
 	/* Back Plane */
-
 }
 
 
 void loadModels() {
 	ModelLoader modelLoader;
-	
+
 	tangram = new std::map<std::string, WorldObject*>();
 
 	WorldObject * aux;
 	std::string name;
 
 	RenderModelManager* renderManager = RenderModelManager::instance();
-	
-	renderManager->addRenderModel("Square",modelLoader.loadModel("../resources/Square.obj"));
+
+	renderManager->addRenderModel("Square", modelLoader.loadModel("../resources/Square.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Square"));
-	world->add("Square",aux);
+	world->add("Square", aux);
 	tangram->operator[]("Square") = aux;
+	selectedObject.push_back("Square");
 
 	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
-	world->add("MedTri",aux);
+	world->add("MedTri", aux);
 	tangram->operator[]("MedTri") = aux;
+	selectedObject.push_back("MedTri");
 
 	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
-	world->add("BigTri1",aux);
+	world->add("BigTri1", aux);
 	tangram->operator[]("BigTri1") = aux;
+	selectedObject.push_back("BigTri1");
 
 	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
 	world->add("BigTri2", aux);
 	tangram->operator[]("BigTri2") = aux;
+	selectedObject.push_back("BigTri2");
 
 	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
-	world->add("SmallTri1",aux);
+	world->add("SmallTri1", aux);
 	tangram->operator[]("SmallTri1") = aux;
+	selectedObject.push_back("SmallTri1");
 
 	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
-	world->add("SmallTri2",aux);
+	world->add("SmallTri2", aux);
 	tangram->operator[]("SmallTri2") = aux;
+	selectedObject.push_back("SmallTri2");
 
 	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("Quad"));
 	world->add("Quad", aux);
 	tangram->operator[]("Quad") = aux;
+	selectedObject.push_back("Quad");
 
 	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
 	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
-	world->add("BackPlane",aux);
+	world->add("BackPlane", aux);
 	tangram->operator[]("BackPlane") = aux;
 }
 
@@ -353,17 +447,17 @@ void setupGLUT(int argc, char* argv[])
 	}
 }
 
-void cameraSetup() 
+void cameraSetup()
 {
 	theta = 0.0f;
-	phi = 0.0f;
+	phi = (float)PI / 4.0f;
 	raw = 3.0f;
 	cameraCenter = glm::vec3(0.0f);
 }
 
-void initTime() 
+void initTime()
 {
-	oldTime = glutGet(GLUT_ELAPSED_TIME) * 1E-03;
+	oldTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
 	time = 0.0f;
 }
 
