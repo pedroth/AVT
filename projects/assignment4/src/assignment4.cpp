@@ -266,7 +266,7 @@ void changeSelectedObjectShader()
 }
 void keyboardKey(unsigned char key, int x, int y) {
 
-	if (key == 's'){
+	if (key == 's') {
 		selected = !selected;
 		lastSelectObjectIndex = selectedObjectIndex;
 		selectedObjectIndex = 0;
@@ -306,29 +306,50 @@ void SpecialkeyboardKey(int key, int x, int y){
 void buildTangram() {
 	std::map<std::string, WorldObject*> tangramObject = *tangram;
 	WorldObject* aux;
+	float* cosCircle = new float[7];
+	float* sinCircle = new float[7];
+	/*radius was an aesthetically(?) number*/
+	float radius = 1.2;
+	for (int i = 0; i < 7; i++) {
+		cosCircle[i] = radius * cos(i * (2 * PI / 7));
+		sinCircle[i] = radius * sin(i * (2 * PI / 7));
+	}
+	int incr = 0;
 	/* Square */
 	aux = tangramObject["Square"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.5f, 0.0f)));
-	aux->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/*Medium Triangle*/
 	aux = tangramObject["MedTri"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 1.0f, 0.0f)));
-	aux->setPosition(glm::vec3(3 / 8, -3 / 8, 0.0f));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Big Triangle 1 */
 	aux = tangramObject["BigTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 0.0f)));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Big Triangle 2 */
 	aux = tangramObject["BigTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 0.0f, 1.0f)));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Small Triangle 1 */
 	aux = tangramObject["SmallTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 1.0f)));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Small Triangle 2 */
 	aux = tangramObject["SmallTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 1.0f)));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Parallelogram */
 	aux = tangramObject["Quad"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 0.0f)));
+	aux->setPosition(glm::vec3(cosCircle[incr], sinCircle[incr], 0.0f));
+	aux->setQuaternion(glm::quat(cosCircle[incr], 0.0f, 0.0f, sinCircle[incr++]));
 	/* Back Plane */
 }
 

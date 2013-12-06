@@ -17,6 +17,7 @@ RenderModel* WorldObject::getMesh() {
 	return mesh;
 }
 void WorldObject::setQuaternion(glm::quat quaternion) {
+	quaternion = glm::normalize(quaternion);
 	this->quaternion = quaternion;
 }
 void WorldObject::setPosition(glm::vec3 position) {
@@ -35,6 +36,7 @@ void WorldObject::translate(glm::vec3 translate) {
 	position = position + translate;
 }
 void WorldObject::rotate(glm::quat rotate) {
+	rotate = glm::normalize(rotate);
 	quaternion = rotate  * quaternion;
 }
 glm::mat4x4 WorldObject::getTransformationMatrix() {
