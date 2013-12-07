@@ -23,6 +23,7 @@ spherical coordinates of the camera
 */
 float theta, phi, raw;
 glm::vec3 cameraCenter;
+glm::mat4x4 proj;
 /* shared matrices bindpoint*/
 const GLuint BINDPOINT = 0;
 /* shared matrices buffer object id*/
@@ -35,6 +36,7 @@ float time;
 std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
+bool rotateState = false;
 std::vector<std::string> selectedObject;
 int selectedObjectIndex = 0;
 int lastSelectObjectIndex = 0;
@@ -149,7 +151,6 @@ void sendTimeToShaders() {
 void drawScene() {
 
 	glm::mat4x4 view = orbit();
-	glm::mat4x4 proj = glm::ortho(-3.f, 3.f, -3.f, 3.f, 0.f, 10.f);
 	writeSharedMatrices(view, proj);
 
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
@@ -272,20 +273,39 @@ void keyboardKey(unsigned char key, int x, int y) {
 		selectedObjectIndex = 0;
 
 		changeSelectedObjectShader();
+		if (!selected){
+			rotateState = selected;
+		}
 	}
 
+	if (key == 'r'){
+		if (selected){
+			rotateState = !rotateState;
+		}
+	}
 
+	if (key == 'c'){
+		cameraCenter = glm::vec3(0.0f);
+		proj = glm::ortho(-8.5f, 8.5f, -8.5f, 8.5f, 0.f, 40.f);
+	}
+
+	if (key == 'v'){
+		std::map<std::string, WorldObject*> tangramObject = *tangram;
+		
+		cameraCenter = tangramObject["BackPlane"]->getPosition();
+		proj = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.f, 20.f);
+	}
 
 }
 
 void SpecialkeyboardKey(int key, int x, int y){
-	if (selected){
+	if (selected && !rotateState){
 		if (key == GLUT_KEY_LEFT){
 			lastSelectObjectIndex = selectedObjectIndex;
 			selectedObjectIndex--;
 			selectedObjectIndex = positiveModulo(selectedObjectIndex, selectedObject.size());
 
-			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+			//std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
 
 			changeSelectedObjectShader();
 		}
@@ -294,12 +314,24 @@ void SpecialkeyboardKey(int key, int x, int y){
 			selectedObjectIndex++;
 			selectedObjectIndex = selectedObjectIndex % selectedObject.size();
 
-			std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
+			//std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
 
 			changeSelectedObjectShader();
 		}
 	}
+	if (rotateState){
+		std::map<std::string, WorldObject*> tangramObject = *tangram;
+		WorldObject* aux;
 
+		/* Square */
+		aux = tangramObject[selectedObject[selectedObjectIndex]];
+		if (key == GLUT_KEY_LEFT){
+			aux->rotate(glm::quat(cosf((-PI / 4) / 2), 0.0f, 0.0f, sinf((-PI / 4) / 2)));
+		}
+		if (key == GLUT_KEY_RIGHT){
+			aux->rotate(glm::quat(cosf((PI / 4) / 2), 0.0f, 0.0f, sinf((PI / 4) / 2)));
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
@@ -310,34 +342,41 @@ void buildTangram() {
 	/* Square */
 	aux = tangramObject["Square"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.5f, 0.0f)));
-	aux->setPosition(glm::vec3(0.5f, 0.0f, 0.0f));
+	aux->setPosition(glm::vec3(-3.5f, 4.0f, 0.0f));
+	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/*Medium Triangle*/
 	aux = tangramObject["MedTri"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 1.0f, 0.0f)));
-	aux->setPosition(glm::vec3(1.0f, -1.0f, 0.0f));
+	aux->setPosition(glm::vec3(-3.0f, 3.0f, 0.0f));
+	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Big Triangle 1 */
 	aux = tangramObject["BigTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 0.0f)));
-	aux->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf((PI / 2) / 2), 0.0f, 0.0f, sinf((PI / 2) / 2)));
 	/* Big Triangle 2 */
 	aux = tangramObject["BigTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 0.0f, 1.0f)));
-	aux->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
+	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Small Triangle 1 */
 	aux = tangramObject["SmallTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 1.0f)));
-	aux->setPosition(glm::vec3(0.5f, 0.5f, 0.0f));
+	aux->setPosition(glm::vec3(-3.5f, 4.5f, 0.0f));
+	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Small Triangle 2 */
 	aux = tangramObject["SmallTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 1.0f)));
-	aux->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf((-PI / 2) / 2), 0.0f, 0.0f, sinf((-PI / 2) / 2)));
 	/* Parallelogram */
 	aux = tangramObject["Quad"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 0.0f)));
-	aux->setPosition(glm::vec3(-1.0f, -1.0f, 0.0f));
+	aux->setPosition(glm::vec3(-5.0f, 3.0f, 0.0f));
+	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Back Plane */
+	aux = tangramObject["BackPlane"];
+	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 }
 
 
@@ -457,10 +496,13 @@ void setupGLUT(int argc, char* argv[])
 
 void cameraSetup()
 {
+	std::map<std::string, WorldObject*> tangramObject = *tangram;
+
 	theta = (3 * (float)PI)/2.0f;
 	phi = (float)PI / 4.0f;
-	raw = 3.0f;
-	cameraCenter = glm::vec3(0.0f);
+	raw = 10.0f;
+	cameraCenter = tangramObject["BackPlane"]->getPosition();
+	proj = glm::ortho(-4.f, 4.f, -4.f, 4.f, 0.f, 20.f);
 }
 
 void initTime()
