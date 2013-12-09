@@ -36,7 +36,21 @@ void WorldObject::setColor(ColorMaterial color) {
 	this->color = color;
 }
 void WorldObject::translate(glm::vec3 translate) {
-	position = position + translate;
+	glm::vec3 pos = position + translate;
+
+	if (pos[0] > 0){
+		pos[0] = 0;
+	}
+	if (pos[0] < -8){
+		pos[0] = -8;
+	}
+	if (pos[1] < 0){
+		pos[1] = 0;
+	}
+	if (pos[1] > 8){
+		pos[1] = 8;
+	}
+	position = pos;
 }
 void WorldObject::rotate(glm::quat rotate) {
 	rotate = glm::normalize(rotate);
@@ -46,54 +60,6 @@ glm::mat4x4 WorldObject::getTransformationMatrix() {
 	glm::mat4 rotation = glm::mat4_cast(quaternion);
 	glm::mat4 translate = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), this->scale);
-	return translate * rotation * scale;
-}
-
-glm::mat4x4 WorldObject::getXAxisTransformationMatrix() {
-	glm::vec3 newPos, newScale;
-	newPos[0] = -position[0];
-	newPos[1] = position[1];
-	newPos[2] = position[2];
-
-	newScale[0] = -this->scale[0];
-	newScale[1] = this->scale[1];
-	newScale[2] = this->scale[2];
-
-	glm::mat4 rotation = glm::mat4_cast(quaternion);
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), newPos);
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), newScale);
-	return translate * rotation * scale;
-}
-
-glm::mat4x4 WorldObject::getZAxisTransformationMatrix() {
-	glm::vec3 newPos, newScale;
-	newPos[0] = position[0];
-	newPos[1] = -position[1];
-	newPos[2] = position[2];
-
-	newScale[0] = this->scale[0];
-	newScale[1] = -this->scale[1];
-	newScale[2] = this->scale[2];
-
-	glm::mat4 rotation = glm::mat4_cast(quaternion);
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), newPos);
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), newScale);
-	return translate * rotation * scale;
-}
-
-glm::mat4x4 WorldObject::getXZAxisTransformationMatrix() {
-	glm::vec3 newPos, newScale;
-	newPos[0] = -position[0];
-	newPos[1] = -position[1];
-	newPos[2] = position[2];
-
-	newScale[0] = -this->scale[0];
-	newScale[1] = -this->scale[1];
-	newScale[2] = this->scale[2];
-
-	glm::mat4 rotation = glm::mat4_cast(quaternion);
-	glm::mat4 translate = glm::translate(glm::mat4(1.0f), newPos);
-	glm::mat4 scale = glm::scale(glm::mat4(1.0f), newScale);
 	return translate * rotation * scale;
 }
 
@@ -107,7 +73,6 @@ void WorldObject::draw(ShaderProgram* shader) {
 	if (symmetryAxis >= 1){
 		glFrontFace(GL_CW);
 		glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, 1, 1));
-		//transform = getXAxisTransformationMatrix();
 		shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
 		shader->sendUniformVec3("Color", this->color.getColor());
 		mesh->drawModel();
@@ -117,7 +82,6 @@ void WorldObject::draw(ShaderProgram* shader) {
 		{
 			glFrontFace(GL_CW);
 			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(1, -1, 1));
-			//transform = getZAxisTransformationMatrix();
 			shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
 			shader->sendUniformVec3("Color", this->color.getColor());
 			mesh->drawModel();
@@ -125,7 +89,6 @@ void WorldObject::draw(ShaderProgram* shader) {
 		}
 		{
 			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, -1, 1));
-			//transform = getXZAxisTransformationMatrix();
 			shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
 			shader->sendUniformVec3("Color", this->color.getColor());
 			mesh->drawModel();

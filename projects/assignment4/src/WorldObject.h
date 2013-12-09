@@ -28,9 +28,6 @@ public:
 	void translate(glm::vec3 translate);
 	void rotate(glm::quat rotate);
 	glm::mat4x4 getTransformationMatrix();
-	glm::mat4x4 getXAxisTransformationMatrix();
-	glm::mat4x4 getZAxisTransformationMatrix();
-	glm::mat4x4 getXZAxisTransformationMatrix();
 	void draw(ShaderProgram* shader);
 	void setSymmetryAxis(int axis);
 };

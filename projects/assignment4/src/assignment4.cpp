@@ -37,7 +37,9 @@ std::map<std::string, WorldObject *> * tangram;
 
 bool selected = false;
 bool rotateState = false;
+bool moveCamara = false;
 std::vector<std::string> selectedObject;
+int pickedObject[] = {2, 3, 1, 6, 4, 5, 0};
 int selectedObjectIndex = 0;
 int lastSelectObjectIndex = 0;
 int symmetryAxis = 0;
@@ -150,11 +152,15 @@ void sendTimeToShaders() {
 
 
 void drawScene() {
+	glClearStencil(0); // this is the default value
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	glm::mat4x4 view = orbit();
 	writeSharedMatrices(view, proj);
 
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	world->draw(shader);
 }
 
@@ -208,32 +214,44 @@ void mouseMotion(int x, int y)  {
 	float dy = (float)(newMy - my);
 
 	//move camera
-	if (!selected){
+	if (moveCamara){
 		theta += 2 * (float)PI * (-dx / WinX);
 		phi += 2 * (float)PI * (dy / WinY);
-		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
 
-		theta = (float)fmod(theta, (float)2 * PI);
-		phi = (float)fmod(phi, (float)2 * PI);
+		if (theta < 0){
+			theta += (float)(2 * PI);
+		}
+		if (theta > (float)2 * PI){
+			theta -= (float)(2 * PI);
+		}
+
+		if (phi < 0){
+			phi += (float)(2 * PI);
+		}
+		if (phi > (float)2 * PI){
+			phi -= (float)(2 * PI);
+		}
+
+		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
 	}
 	//move the selected object
-	else{
-		float step = 4.0f;
+	else if(selected && !rotateState){
+		float step = 10.0f;
 		float x, y;
 
-		if (theta > 7.0f / 4.0f * (float)PI || theta <= 1.0f / 4.0f * (float)PI){
+		if (theta > (7.0f / 4.0f * (float)PI) || theta <= (1.0f / 4.0f * (float)PI)){
 			x = step * (dy / WinY);
 			y = step * (dx / WinX);
 		}
-		else if (theta > 1.0f / 4.0f * (float)PI && theta <= 3.0f / 4.0f * (float)PI){
+		else if (theta > (1.0f / 4.0f * (float)PI) && theta <= (3.0f / 4.0f * (float)PI)){
 			x = -step * (dx / WinX);
 			y = step * (dy / WinY);
 		}
-		else if (theta > 3.0f / 4.0f * (float)PI && theta <= 5.0f / 4.0f * (float)PI){
+		else if (theta > (3.0f / 4.0f * (float)PI) && theta <= (5.0f / 4.0f * (float)PI)){
 			x = -step * (dy / WinY);
 			y = -step * (dx / WinX);
 		}
-		else if (theta > 5.0f / 4.0f * (float)PI && theta <= 7.0f / 4.0f * (float)PI){
+		else if (theta > (5.0f / 4.0f * (float)PI) && theta <= (7.0f / 4.0f * (float)PI)){
 			x = step * (dx / WinX);
 			y = -step * (dy / WinY);
 		}
@@ -244,16 +262,19 @@ void mouseMotion(int x, int y)  {
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
 		selectdObj->translate(glm::vec3(x, y, 0));
 	}
+	else if (selected && rotateState){
+		float aux = (float)fmod(dx, 2);
+		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		if (dx < 0 && aux == 0){
+			selectdObj->rotate(glm::quat(cosf((-(float)PI / 4.0f) / 2.0f), 0.0f, 0.0f, sinf((-(float)PI / 4.0f) / 2.0f)));
+		}
+		if (dx > 0 && aux == 0){
+			selectdObj->rotate(glm::quat(cosf(((float)PI / 4.0f) / 2.0f), 0.0f, 0.0f, sinf(((float)PI / 4.0f) / 2.0f)));
+		}
+	}
 
 	mx = newMx;
 	my = newMy;
-}
-
-void mousePressed(int button, int state, int x, int y) {
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		mx = x;
-		my = y;
-	}
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE OBJECT MANIPULATION
@@ -266,35 +287,65 @@ void changeSelectedObjectShader()
 		world->setObjectShader(selectedObject[selectedObjectIndex], selectedShader);
 	}
 }
+
+void mousePressed(int button, int state, int x, int y) {
+	if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN){
+		GLuint index;
+		glReadPixels(x, WinY - y - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
+
+		if (index >= 2){
+			selected = true;
+			lastSelectObjectIndex = selectedObjectIndex;
+			selectedObjectIndex = pickedObject[index-2];
+			changeSelectedObjectShader();
+
+			mx = x;
+			my = y;
+		}
+	}
+	
+	if (button == GLUT_RIGHT_BUTTON && selected){
+		if (state == GLUT_DOWN){
+			rotateState = true;
+			mx = x;
+			my = y;
+		}
+		else{
+			rotateState = false;
+		}
+	}
+	if (button == GLUT_LEFT_BUTTON){
+		if (state == GLUT_DOWN){
+			if (selected){
+				selected = false;
+				lastSelectObjectIndex = selectedObjectIndex;
+				selectedObjectIndex = 0;
+				changeSelectedObjectShader();
+			}
+			
+			moveCamara = true;
+			mx = x;
+			my = y;
+		}
+		else{
+			moveCamara = false;
+		}
+	}
+}
+
+
 void keyboardKey(unsigned char key, int x, int y) {
-
-	if (key == 's') {
-		selected = !selected;
-		lastSelectObjectIndex = selectedObjectIndex;
-		selectedObjectIndex = 0;
-
-		changeSelectedObjectShader();
-		if (!selected){
-			rotateState = selected;
-		}
-	}
-
-	if (key == 'r'){
-		if (selected){
-			rotateState = !rotateState;
-		}
-	}
 
 	if (key == 'c'){
 		cameraCenter = glm::vec3(0.0f);
-		proj = glm::ortho(-8.5f, 8.5f, -8.5f, 8.5f, 0.f, 40.f);
+		proj = glm::ortho(-8.5f, 8.5f, -8.5f, 8.5f, 0.f, 50.f);
 	}
 
 	if (key == 'v'){
 		std::map<std::string, WorldObject*> tangramObject = *tangram;
 		
 		cameraCenter = tangramObject["BackPlane"]->getPosition();
-		proj = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.f, 20.f);
+		proj = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.f, 50.f);
 	}
 
 	if (key == 'a'){
@@ -307,39 +358,7 @@ void keyboardKey(unsigned char key, int x, int y) {
 }
 
 void SpecialkeyboardKey(int key, int x, int y){
-	if (selected && !rotateState){
-		if (key == GLUT_KEY_LEFT){
-			lastSelectObjectIndex = selectedObjectIndex;
-			selectedObjectIndex--;
-			selectedObjectIndex = positiveModulo(selectedObjectIndex, selectedObject.size());
-
-			//std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
-
-			changeSelectedObjectShader();
-		}
-		if (key == GLUT_KEY_RIGHT){
-			lastSelectObjectIndex = selectedObjectIndex;
-			selectedObjectIndex++;
-			selectedObjectIndex = selectedObjectIndex % selectedObject.size();
-
-			//std::cout << "Objected Selected: " << selectedObjectIndex << std::endl;
-
-			changeSelectedObjectShader();
-		}
-	}
-	if (rotateState){
-		std::map<std::string, WorldObject*> tangramObject = *tangram;
-		WorldObject* aux;
-
-		/* Square */
-		aux = tangramObject[selectedObject[selectedObjectIndex]];
-		if (key == GLUT_KEY_LEFT){
-			aux->rotate(glm::quat(cosf((-PI / 4) / 2), 0.0f, 0.0f, sinf((-PI / 4) / 2)));
-		}
-		if (key == GLUT_KEY_RIGHT){
-			aux->rotate(glm::quat(cosf((PI / 4) / 2), 0.0f, 0.0f, sinf((PI / 4) / 2)));
-		}
-	}
+	
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
@@ -361,7 +380,7 @@ void buildTangram() {
 	aux = tangramObject["BigTri1"];
 	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 0.0f)));
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
-	aux->setQuaternion(glm::quat(cosf((PI / 2) / 2), 0.0f, 0.0f, sinf((PI / 2) / 2)));
+	aux->setQuaternion(glm::quat(cosf(((float)PI / 2) / 2), 0.0f, 0.0f, sinf(((float)PI / 2) / 2)));
 	/* Big Triangle 2 */
 	aux = tangramObject["BigTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -376,7 +395,7 @@ void buildTangram() {
 	aux = tangramObject["SmallTri2"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 1.0f)));
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
-	aux->setQuaternion(glm::quat(cosf((-PI / 2) / 2), 0.0f, 0.0f, sinf((-PI / 2) / 2)));
+	aux->setQuaternion(glm::quat(cosf((-(float)PI / 2) / 2), 0.0f, 0.0f, sinf((-(float)PI / 2) / 2)));
 	/* Parallelogram */
 	aux = tangramObject["Quad"];
 	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -384,6 +403,7 @@ void buildTangram() {
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Back Plane */
 	aux = tangramObject["BackPlane"];
+	aux->setColor(ColorMaterial(glm::vec3(0.8f, 0.8f, 0.8f)));
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 }
 
@@ -510,7 +530,7 @@ void cameraSetup()
 	phi = (float)PI / 4.0f;
 	raw = 10.0f;
 	cameraCenter = tangramObject["BackPlane"]->getPosition();
-	proj = glm::ortho(-4.f, 4.f, -4.f, 4.f, 0.f, 20.f);
+	proj = glm::ortho(-4.f, 4.f, -4.f, 4.f, 0.f, 50.f);
 }
 
 void initTime()

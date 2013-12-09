@@ -11,14 +11,18 @@ WorldObject* WorldObjectManager::getObject(std::string name) {
 	return (list.find(name))->second.object;
 }
 void WorldObjectManager::draw(ShaderProgram* shader) {
+	int i = 0;
 	for (objList_type::iterator it = list.begin(); it != list.end(); ++it) {
 		WOInfo info = it->second;
 		if (info.shader) {
+			glStencilFunc(GL_ALWAYS, i + 1, -1);
 			info.object->draw(info.shader);
 		}
 		else {
+			glStencilFunc(GL_ALWAYS, i + 1, -1);
 			info.object->draw(shader);
 		}
+		i++;
 	}
 }
 
