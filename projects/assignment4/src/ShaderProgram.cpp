@@ -182,6 +182,14 @@ void ShaderProgram::sendUniformMat4(const std::string &uniformName, const glm::m
 }
 
 
+void ShaderProgram::sendUniformMat3(const std::string &uniformName, const glm::mat3 &mat) {
+	if (!uniformExists(uniformName))
+		return;
+	GLint uniformId = m_uniforms[uniformName].id;
+	glUniformMatrix3fv(uniformId, 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+
 void ShaderProgram::sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec)
 {
 	if (!uniformExists(uniformName))
