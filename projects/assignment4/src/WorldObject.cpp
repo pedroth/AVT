@@ -69,12 +69,16 @@ void WorldObject::draw(ShaderProgram* shader) {
 	shader->sendUniformMat4("ModelMatrix",transform);
 	shader->sendUniformVec3("Color", this->color.getColor());
 	mesh->drawModel();
+	glm::vec3 newColor = this->color.getColor();
+	newColor[0] -= 0.1f;
+	newColor[1] -= 0.1f;
+	newColor[2] -= 0.1f;
 
 	if (symmetryAxis >= 1){
 		glFrontFace(GL_CW);
 		glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, 1, 1));
 		shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
-		shader->sendUniformVec3("Color", this->color.getColor());
+		shader->sendUniformVec3("Color", newColor);
 		mesh->drawModel();
 		glFrontFace(GL_CCW);
 	}
@@ -83,14 +87,14 @@ void WorldObject::draw(ShaderProgram* shader) {
 			glFrontFace(GL_CW);
 			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(1, -1, 1));
 			shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
-			shader->sendUniformVec3("Color", this->color.getColor());
+			shader->sendUniformVec3("Color", newColor);
 			mesh->drawModel();
 			glFrontFace(GL_CCW);
 		}
 		{
 			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, -1, 1));
 			shader->sendUniformMat4("ModelMatrix", symmetryTransform * transform);
-			shader->sendUniformVec3("Color", this->color.getColor());
+			shader->sendUniformVec3("Color", newColor);
 			mesh->drawModel();
 		}
 	}

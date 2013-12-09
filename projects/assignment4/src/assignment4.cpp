@@ -266,10 +266,10 @@ void mouseMotion(int x, int y)  {
 		float aux = (float)fmod(dx, 2);
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
 		if (dx < 0 && aux == 0){
-			selectdObj->rotate(glm::quat(cosf((-(float)PI / 4.0f) / 2.0f), 0.0f, 0.0f, sinf((-(float)PI / 4.0f) / 2.0f)));
+			selectdObj->rotate(glm::quat(cosf((-(float)PI / 8.0f) / 2.0f), 0.0f, 0.0f, sinf((-(float)PI / 8.0f) / 2.0f)));
 		}
 		if (dx > 0 && aux == 0){
-			selectdObj->rotate(glm::quat(cosf(((float)PI / 4.0f) / 2.0f), 0.0f, 0.0f, sinf(((float)PI / 4.0f) / 2.0f)));
+			selectdObj->rotate(glm::quat(cosf(((float)PI / 8.0f) / 2.0f), 0.0f, 0.0f, sinf(((float)PI / 8.0f) / 2.0f)));
 		}
 	}
 
