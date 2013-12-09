@@ -22,6 +22,7 @@ public:
 	WorldObject* getObject(std::string name);
 	void setObjectShader(std::string name, ShaderProgram *shader);
 	void draw(ShaderProgram* shader);
+	void setSymmetryAxis(int axis);
 };
 
 #endif // !_WORLDMANAGER_H

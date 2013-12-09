@@ -40,6 +40,7 @@ bool rotateState = false;
 std::vector<std::string> selectedObject;
 int selectedObjectIndex = 0;
 int lastSelectObjectIndex = 0;
+int symmetryAxis = 0;
 
 WorldObjectManager *world = new WorldObjectManager();
 
@@ -217,7 +218,7 @@ void mouseMotion(int x, int y)  {
 	}
 	//move the selected object
 	else{
-		float step = 2.0f;
+		float step = 4.0f;
 		float x, y;
 
 		if (theta > 7.0f / 4.0f * (float)PI || theta <= 1.0f / 4.0f * (float)PI){
@@ -294,6 +295,13 @@ void keyboardKey(unsigned char key, int x, int y) {
 		
 		cameraCenter = tangramObject["BackPlane"]->getPosition();
 		proj = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.f, 20.f);
+	}
+
+	if (key == 'a'){
+		symmetryAxis++;
+		symmetryAxis = symmetryAxis % 3;
+		std::cout << symmetryAxis << std::endl;
+		world->setSymmetryAxis(symmetryAxis);
 	}
 
 }

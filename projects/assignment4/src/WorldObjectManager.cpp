@@ -34,3 +34,9 @@ WorldObjectManager::WOInfo::WOInfo(WorldObject *obj)
 WorldObjectManager::WOInfo::WOInfo()
 : object(), shader(0)
 {}
+
+void WorldObjectManager::setSymmetryAxis(int axis) {
+	for (objList_type::iterator it = list.begin(); it != list.end(); ++it) {
+		it->second.object->setSymmetryAxis(axis);
+	}
+}
