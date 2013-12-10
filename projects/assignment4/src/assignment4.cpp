@@ -342,7 +342,6 @@ void mousePressed(int button, int state, int x, int y) {
 
 
 void keyboardKey(unsigned char key, int x, int y) {
-
 	if (key == 'c'){
 		cameraCenter = glm::vec3(0.0f);
 		proj = glm::ortho(-8.5f, 8.5f, -8.5f, 8.5f, 0.f, 50.f);
@@ -360,6 +359,12 @@ void keyboardKey(unsigned char key, int x, int y) {
 		symmetryAxis = symmetryAxis % 3;
 		std::cout << symmetryAxis << std::endl;
 		world->setSymmetryAxis(symmetryAxis);
+	}
+	if (key == 's'){
+		world->save(symmetryAxis);
+	}
+	if (key == 'l'){
+		world->load(&symmetryAxis);
 	}
 
 }
