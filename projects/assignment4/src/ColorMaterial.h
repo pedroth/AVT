@@ -16,6 +16,6 @@ public:
 	ColorMaterial(glm::vec3 emit, glm::vec3 amb, glm::vec3 diff, glm::vec3 spec, float shine);
 	glm::vec3 getDiffColor();
 	void setDiffColor(glm::vec3 color);
-	//void sendToShader(ShaderProgram *program);
-	//void sendToShaderMultiplied(ShaderProgram *program, float factor);
+	void sendToShader(ShaderProgram *program);
+	void sendToShaderMultiplied(ShaderProgram *program, float factor);
 };

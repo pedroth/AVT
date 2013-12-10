@@ -109,6 +109,49 @@ void createShaderProgram() {
 	selectShader->sendUniformVec3("LightDirection", lightDir);
 	selectShader->sendUniformVec3("SelectedColor", selectedColor);
 	selectShader->unbind();
+
+	ShaderProgram * phong = new ShaderProgram();
+	phong->addShader(GL_VERTEX_SHADER, ShaderPath + "myPhongVS.glsl");
+	phong->addShader(GL_FRAGMENT_SHADER, ShaderPath + "myPhongFS.glsl");
+	phong->addAttrib("inPosition", RenderModel::POSITION);
+	phong->addAttrib("inNormal", RenderModel::NORMAL);
+	phong->addAttrib("inTex", RenderModel::TEX);
+	phong->addUniform("Color");
+	phong->addUniform("ModelMatrix");
+	phong->addUniform("LightDirection");
+	phong->addUniform("LightPosition");
+	phong->addUniform("LightAmbient");
+	phong->addUniform("LightDiffuse");
+	phong->addUniform("LightSpecular");
+	phong->addUniform("LightAttenuation");
+	phong->addUniform("LightRangeLimit");
+	phong->addUniform("MaterialEmit");
+	phong->addUniform("MaterialAmbient");
+	phong->addUniform("MaterialDiffuse");
+	phong->addUniform("MaterialSpecular");
+	phong->addUniform("MaterialShininess");
+	phong->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	phong->createCompileLink();
+	shaderManager->add("PhongShader", phong);
+
+	//glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
+	glm::vec3 lampPos = glm::vec3(1.0f, -0.5f, 1.0f);
+	glm::vec3 lampAmb = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 lampDiff = glm::vec3(1.0f);
+	glm::vec3 lampSpec = glm::vec3(1.0f);
+	glm::vec3 lampAtte = glm::vec3(1.0f, 0.0f, 0.0f);
+	float lampRange = -1.0f;
+
+	phong->bind();
+	phong->sendUniformVec3("LightDirection", lightDir);
+	phong->sendUniformVec3("LightPosition", lampPos);
+	phong->sendUniformVec3("LightAmbient", lampAmb);
+	phong->sendUniformVec3("LightDiffuse", lampDiff);
+	phong->sendUniformVec3("LightSpecular", lampSpec);
+	phong->sendUniformVec3("LightAttenuation", lampAtte);
+	phong->sendUniformFloat("LightRangeLimit", lampRange);
+	checkOpenGLError("Problem passing LightDirection.");
+	phong->unbind();
 }
 
 void destroyShaderProgram() {
@@ -160,7 +203,10 @@ void sendTimeToShaders() {
 	selectedShader->unbind();
 }
 
-
+//TODO remove
+glm::mat4 testSubjectMM = glm::translate(glm::mat4(), glm::vec3(-4.0f, 4.0f, 1.0f));
+RenderModel *testSubject = 0;
+ColorMaterial *testSubjectMat = 0;
 
 void drawScene() {
 	glClearStencil(0); // this is the default value
@@ -173,6 +219,14 @@ void drawScene() {
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	world->draw(shader);
+
+	//TODO remove
+	ShaderProgram* phong = ShaderManager::getInstance()->get("PhongShader");
+	phong->bind();
+	testSubjectMat->sendToShader(phong);
+	phong->sendUniformMat4("ModelMatrix",testSubjectMM);
+	testSubject->drawModel();
+	phong->unbind();
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -492,6 +546,9 @@ void loadModels() {
 	aux = new WorldObject("BackPlane", renderManager->getRenderModel("BackPlane"));
 	world->add(aux);
 	tangram->operator[]("BackPlane") = aux;
+
+	//TODO remove
+	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Monkey.obj");
 }
 
 void loadMaterials()
@@ -504,6 +561,9 @@ void loadMaterials()
 		matList.push_back(matEntry);
 	MaterialManager *manager = MaterialManager::instance();
 	manager->loadFileList(MaterialPath, matList);
+
+	//TODO remove
+	testSubjectMat = manager->get("Monkey.mtl");
 }
 
 void setupCallbacks()

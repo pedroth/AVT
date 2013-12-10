@@ -6,3 +6,4 @@ SmallTri1.mtl
 SmallTri2.mtl
 Quad.mtl
 BackPlane.mtl
+Monkey.mtl
