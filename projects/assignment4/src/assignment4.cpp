@@ -135,8 +135,8 @@ void createShaderProgram() {
 	shaderManager->add("PhongShader", phong);
 
 	//glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
-	glm::vec3 lampPos = glm::vec3(1.0f, -0.5f, 1.0f);
-	glm::vec3 lampAmb = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 lampPos = glm::vec3(2.0f, -2.0f, 1.0f);
+	glm::vec3 lampAmb = glm::vec3(0.1f);
 	glm::vec3 lampDiff = glm::vec3(1.0f);
 	glm::vec3 lampSpec = glm::vec3(1.0f);
 	glm::vec3 lampAtte = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -548,7 +548,7 @@ void loadModels() {
 	tangram->operator[]("BackPlane") = aux;
 
 	//TODO remove
-	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Monkey.obj");
+	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Sphere.obj");
 }
 
 void loadMaterials()

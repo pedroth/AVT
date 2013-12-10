@@ -2,4 +2,4 @@ emitCol: 		0.0 0.0 0.0
 ambientCol: 	0.8 0.1 0.1
 diffCol: 		1.0 0.1 0.1
 specCol: 		1.0 1.0 1.0
-shininess: 		10
+shininess: 		50

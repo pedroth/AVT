@@ -3,8 +3,9 @@
 in vec3 inPosition;
 in vec3 inNormal;
 in vec2 inTex;
-uniform vec3 Color;
-out vec3 exColor;
+
+out vec3 exViewPosition;
+out vec3 exViewNormal;
 
 uniform mat4 ModelMatrix;
 layout(std140) uniform SharedMatrices {
@@ -12,22 +13,14 @@ layout(std140) uniform SharedMatrices {
 	mat4 ProjectionMatrix;
 };
 
-uniform vec3 LightDirection;
 
 void main(void) {
 	//FIXME should be replaced with NormalMatrix
-	vec4 viewNormal = ViewMatrix * ModelMatrix * vec4(inNormal,0.0);
-	vec3 N = normalize(viewNormal.xyz);
-	vec4 LightView = ViewMatrix * vec4(LightDirection,0.0);
-	vec3 L = -LightView.xyz;
-
-	float NdotL = dot(N,L);
-	float diffInten = max(NdotL,0.0);
-
-	//exColor = LightDirection;
-	//exColor = Color;
-	//exColor = N;
-	exColor = diffInten * Color;
-
+	vec4 viewNorm = ViewMatrix * ModelMatrix * vec4(inNormal,0.0);
+	exViewNormal = normalize(viewNorm.xyz);
+	
+	vec4 viewPos = ViewMatrix * ModelMatrix * vec4(inPosition,1.0f);
+	exViewPosition = viewPos.xyz;
+	
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(inPosition,1.0f);
 }
