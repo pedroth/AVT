@@ -18,7 +18,7 @@ private:
 	objList_type list;
 public:
 	WorldObjectManager();
-	void add(std::string name, WorldObject* object);
+	void add(WorldObject* object);
 	WorldObject* getObject(std::string name);
 	void setObjectShader(std::string name, ShaderProgram *shader);
 	void draw(ShaderProgram* shader);

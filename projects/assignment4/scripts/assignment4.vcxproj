@@ -13,12 +13,14 @@
   <ItemGroup>
     <ClCompile Include="..\src\assignment4.cpp" />
     <ClCompile Include="..\src\ColorMaterial.cpp" />
+    <ClCompile Include="..\src\Mirror.cpp" />
     <ClCompile Include="..\src\ModelLoader.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
     <ClCompile Include="..\src\RenderModelManager.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
     <ClCompile Include="..\src\ShaderManager.cpp" />
     <ClCompile Include="..\src\ShaderProgram.cpp" />
+    <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\WorldObject.cpp" />
     <ClCompile Include="..\src\WorldObjectManager.cpp" />
@@ -26,21 +28,23 @@
   <ItemGroup>
     <ClInclude Include="..\src\ColorMaterial.h" />
     <ClInclude Include="..\src\engine.h" />
+    <ClInclude Include="..\src\Mirror.h" />
     <ClInclude Include="..\src\ModelLoader.h" />
     <ClInclude Include="..\src\RenderModel.h" />
     <ClInclude Include="..\src\RenderModelManager.h" />
     <ClInclude Include="..\src\Shader.h" />
     <ClInclude Include="..\src\ShaderManager.h" />
     <ClInclude Include="..\src\ShaderProgram.h" />
+    <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\WorldObject.h" />
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\WorldObjectManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\shaderSrc\myFS.glsl" />
-    <None Include="..\shaderSrc\myVS.glsl" />
-    <None Include="..\shaderSrc\selectedFS.glsl" />
-    <None Include="..\shaderSrc\selectedVS.glsl" />
+    <None Include="..\resources\shaderSrc\myFS.glsl" />
+    <None Include="..\resources\shaderSrc\myVS.glsl" />
+    <None Include="..\resources\shaderSrc\selectedFS.glsl" />
+    <None Include="..\resources\shaderSrc\selectedVS.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40943D16-275A-4153-B661-B296AC13E743}</ProjectGuid>

@@ -11,15 +11,17 @@ private:
 	glm::vec3 scale;
 	ColorMaterial color;
 	RenderModel* mesh;
+	std::string name;
 	int symmetryAxis;
 
 public:
-	WorldObject(RenderModel* mesh);
+	WorldObject(std::string name, RenderModel* mesh);
 	glm::quat getQuaternion();
 	glm::vec3 getPosition();
 	glm::vec3 getScale();
 	ColorMaterial getColor();
 	RenderModel* getMesh();
+	std::string getName();
 	void setQuaternion(glm::quat quaternion);
 	void setPosition(glm::vec3 position);
 	void setScale(glm::vec3 scale);

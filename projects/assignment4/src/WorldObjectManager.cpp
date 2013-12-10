@@ -3,8 +3,8 @@
 
 WorldObjectManager::WorldObjectManager(){}
 
-void WorldObjectManager::add(std::string name, WorldObject *object) {
-	list[name] = WOInfo(object);
+void WorldObjectManager::add(WorldObject *object) {
+	list[object->getName()] = WOInfo(object);
 }
 WorldObject* WorldObjectManager::getObject(std::string name) {
 	assert(list.find(name) != list.end());

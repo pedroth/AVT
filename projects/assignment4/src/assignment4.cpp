@@ -10,6 +10,13 @@
 #define CAPTION "Hello New World"
 #define PI 3.14159265359
 
+const std::string ResourcesPath = "../resources/";
+const std::string ShaderDir = "shaderSrc/";
+const std::string ModelDir = "models/";
+const std::string ShaderPath = ResourcesPath + ShaderDir;
+const std::string ModelPath = ResourcesPath + ModelDir;
+
+
 int WinX = 640, WinY = 480;
 int WindowHandle = 0;
 unsigned int FrameCount = 0;
@@ -58,8 +65,8 @@ void createShaderProgram() {
 	createSharedUniformBlocks();
 	ShaderManager* shaderManager = ShaderManager::getInstance();
 	ShaderProgram * myShader = new ShaderProgram();
-	myShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/myVS.glsl");
-	myShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/myFS.glsl");
+	myShader->addShader(GL_VERTEX_SHADER, ShaderPath + "myVS.glsl");
+	myShader->addShader(GL_FRAGMENT_SHADER, ShaderPath + "myFS.glsl");
 	myShader->addAttrib("inPosition", RenderModel::POSITION);
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
@@ -78,8 +85,8 @@ void createShaderProgram() {
 	myShader->unbind();
 
 	ShaderProgram *selectShader = new ShaderProgram();
-	selectShader->addShader(GL_VERTEX_SHADER, "../shaderSrc/selectedVS.glsl");
-	selectShader->addShader(GL_FRAGMENT_SHADER, "../shaderSrc/selectedFS.glsl");
+	selectShader->addShader(GL_VERTEX_SHADER, ShaderPath + "selectedVS.glsl");
+	selectShader->addShader(GL_FRAGMENT_SHADER, ShaderPath + "selectedFS.glsl");
 	selectShader->addAttrib("inPosition", RenderModel::POSITION);
 	selectShader->addAttrib("inNormal", RenderModel::NORMAL);
 	selectShader->addAttrib("inTex", RenderModel::TEX);
@@ -418,51 +425,51 @@ void loadModels() {
 
 	RenderModelManager* renderManager = RenderModelManager::instance();
 
-	renderManager->addRenderModel("Square", modelLoader.loadModel("../resources/Square.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("Square"));
-	world->add("Square", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("Square", ModelPath + "Square.obj"));
+	aux = new WorldObject("Square", renderManager->getRenderModel("Square"));
+	world->add(aux);
 	tangram->operator[]("Square") = aux;
 	selectedObject.push_back("Square");
 
-	renderManager->addRenderModel("MedTri", modelLoader.loadModel("../resources/MedTri.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("MedTri"));
-	world->add("MedTri", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("MedTri", ModelPath + "MedTri.obj"));
+	aux = new WorldObject("MedTri", renderManager->getRenderModel("MedTri"));
+	world->add(aux);
 	tangram->operator[]("MedTri") = aux;
 	selectedObject.push_back("MedTri");
 
-	renderManager->addRenderModel("BigTri1", modelLoader.loadModel("../resources/BigTri.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("BigTri1"));
-	world->add("BigTri1", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("BigTri1", ModelPath + "BigTri.obj"));
+	aux = new WorldObject("BigTri1", renderManager->getRenderModel("BigTri1"));
+	world->add(aux);
 	tangram->operator[]("BigTri1") = aux;
 	selectedObject.push_back("BigTri1");
 
-	renderManager->addRenderModel("BigTri2", modelLoader.loadModel("../resources/BigTri.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("BigTri2"));
-	world->add("BigTri2", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("BigTri2", ModelPath + "BigTri.obj"));
+	aux = new WorldObject("BigTri2", renderManager->getRenderModel("BigTri2"));
+	world->add(aux);
 	tangram->operator[]("BigTri2") = aux;
 	selectedObject.push_back("BigTri2");
 
-	renderManager->addRenderModel("SmallTri1", modelLoader.loadModel("../resources/SmallTri.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("SmallTri1"));
-	world->add("SmallTri1", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("SmallTri1", ModelPath + "SmallTri.obj"));
+	aux = new WorldObject("SmallTri1", renderManager->getRenderModel("SmallTri1"));
+	world->add(aux);
 	tangram->operator[]("SmallTri1") = aux;
 	selectedObject.push_back("SmallTri1");
 
-	renderManager->addRenderModel("SmallTri2", modelLoader.loadModel("../resources/SmallTri.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("SmallTri2"));
-	world->add("SmallTri2", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("SmallTri2", ModelPath + "SmallTri.obj"));
+	aux = new WorldObject("SmallTri2", renderManager->getRenderModel("SmallTri2"));
+	world->add(aux);
 	tangram->operator[]("SmallTri2") = aux;
 	selectedObject.push_back("SmallTri2");
 
-	renderManager->addRenderModel("Quad", modelLoader.loadModel("../resources/Quad.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("Quad"));
-	world->add("Quad", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("Quad", ModelPath + "Quad.obj"));
+	aux = new WorldObject("Quad", renderManager->getRenderModel("Quad"));
+	world->add(aux);
 	tangram->operator[]("Quad") = aux;
 	selectedObject.push_back("Quad");
 
-	renderManager->addRenderModel("BackPlane", modelLoader.loadModel("../resources/BackPlane.obj"));
-	aux = new WorldObject(renderManager->getRenderModel("BackPlane"));
-	world->add("BackPlane", aux);
+	renderManager->addRenderModel(modelLoader.loadModel("BackPlane", ModelPath + "BackPlane.obj"));
+	aux = new WorldObject("BackPlane", renderManager->getRenderModel("BackPlane"));
+	world->add(aux);
 	tangram->operator[]("BackPlane") = aux;
 }
 

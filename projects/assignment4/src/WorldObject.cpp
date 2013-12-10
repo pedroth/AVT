@@ -1,7 +1,8 @@
 #include "WorldObject.h"
 
-WorldObject::WorldObject(RenderModel* mesh) : mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), 
-				position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color(), symmetryAxis(0) { 
+WorldObject::WorldObject(std::string name, RenderModel* mesh) 
+: name(name), mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), 
+position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color(), symmetryAxis(0) { 
 }
 
 glm::quat WorldObject::getQuaternion() {
@@ -18,6 +19,9 @@ ColorMaterial WorldObject::getColor() {
 }
 RenderModel* WorldObject::getMesh() {
 	return mesh;
+}
+std::string WorldObject::getName() {
+	return name;
 }
 void WorldObject::setQuaternion(glm::quat quaternion) {
 	quaternion = glm::normalize(quaternion);
