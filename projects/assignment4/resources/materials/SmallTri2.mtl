@@ -1,0 +1,5 @@
+emitCol: 		0.0 0.0 0.0
+ambientCol: 	1.0 1.0 1.0
+diffCol: 		0.1 1.0 1.0
+specCol: 		1.0 1.0 1.0
+shininess: 		10
