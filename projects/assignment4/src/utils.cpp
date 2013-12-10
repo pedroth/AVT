@@ -27,6 +27,10 @@ std::string readFromFile(const std::string &filePath)
 			readText << Line << std::endl;
 		fileStream.close();
 	}
+	else 
+	{
+		std::cerr << "File: " << filePath << " could not be opened." << std::endl;
+	}
 
 	return readText.str();
 }

@@ -7,6 +7,8 @@
 #include "RenderModel.h"
 #include "ShaderProgram.h"
 #include "ShaderManager.h"
+#include "ColorMaterial.h"
+#include "MaterialManager.h"
 #include "RenderModelManager.h"
 #include "ModelLoader.h"
 #include "utils.h"

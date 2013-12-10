@@ -1,4 +1,7 @@
-#include"engine.h"
+#pragma once
+
+#include <glm.hpp>
+#include "ShaderProgram.h"
 
 class ColorMaterial {
 private:

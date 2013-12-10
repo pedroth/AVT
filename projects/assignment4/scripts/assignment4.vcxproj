@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\assignment4.cpp" />
     <ClCompile Include="..\src\ColorMaterial.cpp" />
+    <ClCompile Include="..\src\MaterialManager.cpp" />
     <ClCompile Include="..\src\Mirror.cpp" />
     <ClCompile Include="..\src\ModelLoader.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ClInclude Include="..\src\ColorMaterial.h" />
     <ClInclude Include="..\src\engine.h" />
+    <ClInclude Include="..\src\MaterialManager.h" />
     <ClInclude Include="..\src\Mirror.h" />
     <ClInclude Include="..\src\ModelLoader.h" />
     <ClInclude Include="..\src\RenderModel.h" />

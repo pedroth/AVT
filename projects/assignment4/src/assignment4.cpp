@@ -13,8 +13,12 @@
 const std::string ResourcesPath = "../resources/";
 const std::string ShaderDir = "shaderSrc/";
 const std::string ModelDir = "models/";
+const std::string MaterialDir = "materials/";
 const std::string ShaderPath = ResourcesPath + ShaderDir;
 const std::string ModelPath = ResourcesPath + ModelDir;
+const std::string MaterialPath = ResourcesPath + MaterialDir;
+
+const std::string MaterialListFile = "materials.txt";
 
 
 int WinX = 640, WinY = 480;
@@ -285,6 +289,7 @@ void mouseMotion(int x, int y)  {
 }
 
 /////////////////////////////////////////////////////////////////////// SCENE OBJECT MANIPULATION
+
 void changeSelectedObjectShader()
 {
 	world->setObjectShader(selectedObject[lastSelectObjectIndex], 0);
@@ -377,47 +382,58 @@ void SpecialkeyboardKey(int key, int x, int y){
 void buildTangram() {
 	std::map<std::string, WorldObject*> tangramObject = *tangram;
 	WorldObject* aux;
+	MaterialManager *manager = MaterialManager::instance();
+	ColorMaterial *matAux = 0;
 	
 	/* Square */
 	aux = tangramObject["Square"];
-	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.5f, 0.0f)));
+	matAux = manager->get("Square.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-3.5f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/*Medium Triangle*/
 	aux = tangramObject["MedTri"];
-	aux->setColor(ColorMaterial(glm::vec3(1.0f, 1.0f, 0.0f)));
+	matAux = manager->get("MedTri.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-3.0f, 3.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Big Triangle 1 */
 	aux = tangramObject["BigTri1"];
-	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 0.0f)));
+	matAux = manager->get("BigTri1.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(((float)PI / 2) / 2), 0.0f, 0.0f, sinf(((float)PI / 2) / 2)));
 	/* Big Triangle 2 */
 	aux = tangramObject["BigTri2"];
-	aux->setColor(ColorMaterial(glm::vec3(0.0f, 0.0f, 1.0f)));
+	matAux = manager->get("BigTri2.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Small Triangle 1 */
 	aux = tangramObject["SmallTri1"];
-	aux->setColor(ColorMaterial(glm::vec3(1.0f, 0.0f, 1.0f)));
+	matAux = manager->get("SmallTri1.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-3.5f, 4.5f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Small Triangle 2 */
 	aux = tangramObject["SmallTri2"];
-	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 1.0f)));
+	matAux = manager->get("SmallTri2.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf((-(float)PI / 2) / 2), 0.0f, 0.0f, sinf((-(float)PI / 2) / 2)));
 	/* Parallelogram */
 	aux = tangramObject["Quad"];
-	aux->setColor(ColorMaterial(glm::vec3(0.0f, 1.0f, 0.0f)));
+	matAux = manager->get("Quad.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-5.0f, 3.0f, 0.0f));
 	aux->setQuaternion(glm::quat(cosf(0), 0.0f, 0.0f, sinf(0)));
 	/* Back Plane */
 	aux = tangramObject["BackPlane"];
-	aux->setColor(ColorMaterial(glm::vec3(0.8f, 0.8f, 0.8f)));
+	matAux = manager->get("BackPlane.mtl");
+	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
 }
+
 
 
 void loadModels() {
@@ -478,6 +494,17 @@ void loadModels() {
 	tangram->operator[]("BackPlane") = aux;
 }
 
+void loadMaterials()
+{
+	std::string matsListStr = readFromFile(MaterialPath + MaterialListFile);
+	std::istringstream stream(matsListStr);
+	std::vector<std::string> matList;
+	std::string matEntry;
+	while (getline(stream, matEntry))
+		matList.push_back(matEntry);
+	MaterialManager *manager = MaterialManager::instance();
+	manager->loadFileList(MaterialPath, matList);
+}
 
 void setupCallbacks()
 {
@@ -560,6 +587,7 @@ void init(int argc, char* argv[])
 	createBufferObjects();
 	setupCallbacks();
 	loadModels();
+	loadMaterials();
 	buildTangram();
 	cameraSetup();
 	initTime();
