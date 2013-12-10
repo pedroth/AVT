@@ -71,9 +71,9 @@ void WorldObject::draw(ShaderProgram* shader) {
 	shader->bind();
 	glm::mat4 transform = getTransformationMatrix();
 	shader->sendUniformMat4("ModelMatrix",transform);
-	shader->sendUniformVec3("Color", this->color.getColor());
+	shader->sendUniformVec3("Color", this->color.getDiffColor());
 	mesh->drawModel();
-	glm::vec3 newColor = this->color.getColor();
+	glm::vec3 newColor = this->color.getDiffColor();
 	newColor[0] -= 0.1f;
 	newColor[1] -= 0.1f;
 	newColor[2] -= 0.1f;
