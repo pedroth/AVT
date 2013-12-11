@@ -51,7 +51,6 @@ void WorldObjectManager::save(int axis) {
 
 	std::ofstream file("../resources/worldFile.txt", std::ios::trunc);
 	if (file.is_open()){
-		std::cout << "Saving..." << std::endl;
 		file << axis << std::endl;
 		
 		for (objList_type::iterator it = list.begin(); it != list.end(); ++it) {
@@ -62,6 +61,7 @@ void WorldObjectManager::save(int axis) {
 		}
 
 		file.close();
+		std::cout << "World Saved" << std::endl;
 	}
 	else{
 		std::cerr << "WorldObjectManager::save: Error in file open" << std::endl;
@@ -74,8 +74,6 @@ void WorldObjectManager::load(int *axis) {
 	std::string line;
 	std::ifstream file("../resources/worldFile.txt");
 	if (file.is_open()){
-		std::cout << "Loading..." << std::endl;
-
 		getline(file, line);
 		std::istringstream stream(line);
 		stream >> *axis;
@@ -91,6 +89,8 @@ void WorldObjectManager::load(int *axis) {
 			it->second.object->setSymmetryAxis(*axis);
 		}
 		file.close();
+
+		std::cout << "World Loaded" << std::endl;
 	}
 
 	else{

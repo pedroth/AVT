@@ -4,6 +4,7 @@
 #include <string>
 
 #include "engine.h"
+#include <FreeImage.h>
 
 #include "WorldObjectManager.h"
 
@@ -296,8 +297,6 @@ void mouseMotion(int x, int y)  {
 		if (phi > (float)2 * PI){
 			phi -= (float)(2 * PI);
 		}
-
-		//std::cout << "   theta:	   " << theta << "	   phi:	    " << phi << std::endl;
 	}
 	//move the selected object
 	else if(selected && !rotateState){
@@ -416,7 +415,6 @@ void keyboardKey(unsigned char key, int x, int y) {
 	if (key == 'a'){
 		symmetryAxis++;
 		symmetryAxis = symmetryAxis % 3;
-		std::cout << symmetryAxis << std::endl;
 		world->setSymmetryAxis(symmetryAxis);
 	}
 	if (key == 's'){
@@ -424,6 +422,18 @@ void keyboardKey(unsigned char key, int x, int y) {
 	}
 	if (key == 'l'){
 		world->load(&symmetryAxis);
+	}
+	if (key == 'p'){
+		BYTE* imageData = new BYTE[WinX * WinY * 3];
+		glReadPixels(0, 0, WinX, WinY, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+
+		FIBITMAP* image = FreeImage_ConvertFromRawBits(imageData, WinX, WinY, 3 * WinX, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
+		FreeImage_Save(FIF_BMP, image, "../resources/sceneImage.bmp", 0);
+
+		FreeImage_Unload(image);
+		delete[] imageData;
+
+		std::cout << "Snapshot saved" << std::endl;
 	}
 
 }
