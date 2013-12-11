@@ -271,6 +271,39 @@ void timer(int value)
 	glutTimerFunc(1000, timer, 0);
 }
 
+/* need a pen to explain */
+glm::vec3 pickMouse(int x, int y) {
+	float yclip = ((y * (-2.0f)) / (WinY)) + 1;
+	float xclip = ((x * 2.0f) / WinX) - 1;
+
+	glm::mat4x4 view = orbit();
+
+	glm::mat4 M = proj * view;
+	
+	glm::vec4 lambda(xclip, yclip, 0.0f,1.0f);
+	lambda = glm::inverse(M) * lambda;
+
+	int minIndex = 0;
+	float minD = 1E99;
+	for (int i = 0; i < selectedObject.size(); i++) {
+		WorldObject wo = *(tangram->at(selectedObject[i]));
+		glm::vec3 pos = wo.getPosition();
+		float xWoCenter = pos[0];
+		float yWoCenter = pos[1];
+		float d = (lambda[0] - xWoCenter) * (lambda[0] - xWoCenter) + (lambda[1]- yWoCenter) * (lambda[1]- yWoCenter);
+		if (minD > d) {
+			minIndex = i;
+			minD = d;
+		}
+	}
+	//selectedObjectIndex = minIndex;
+	//selectedObjectIndex = 0;
+	return glm::vec3(lambda[0], lambda[1], 0);
+	//std::cout << "x:" << xOnPlane << "		y	" << yOnPlane << std::endl;
+	//WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+	//selectdObj->setPosition(glm::vec3(lambda[0], lambda[1], 0));
+}
+
 void mouseMotion(int x, int y)  {
 	WorldObject *selectdObj;
 
@@ -279,6 +312,9 @@ void mouseMotion(int x, int y)  {
 	float dx = (float)(newMx - mx);
 	float dy = (float)(newMy - my);
 
+
+	glm::vec3 lambda = pickMouse(x, y);
+
 	//move camera
 	if (moveCamara){
 		theta += 2 * (float)PI * (-dx / WinX);
@@ -286,7 +322,7 @@ void mouseMotion(int x, int y)  {
 
 		if (theta < 0){
 			theta += (float)(2 * PI);
-		}
+	}
 		if (theta > (float)2 * PI){
 			theta -= (float)(2 * PI);
 		}
@@ -325,8 +361,11 @@ void mouseMotion(int x, int y)  {
 			std::cerr << "Error on move objects function" << std::endl;
 		}
 
-		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-		selectdObj->translate(glm::vec3(x, y, 0));
+		WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		selectdObj->setPosition(lambda);
+
+		//selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		//selectdObj->translate(glm::vec3(x, y, 0));
 	}
 	else if (selected && rotateState){
 		float aux = (float)fmod(dx, 2);
@@ -364,13 +403,13 @@ void mousePressed(int button, int state, int x, int y) {
 			selected = true;
 			lastSelectObjectIndex = selectedObjectIndex;
 			selectedObjectIndex = pickedObject[index-2];
-			changeSelectedObjectShader();
+		changeSelectedObjectShader();
 
 			mx = x;
 			my = y;
 		}
 	}
-	
+
 	if (button == GLUT_RIGHT_BUTTON && selected){
 		if (state == GLUT_DOWN){
 			rotateState = true;
@@ -383,7 +422,7 @@ void mousePressed(int button, int state, int x, int y) {
 	}
 	if (button == GLUT_LEFT_BUTTON){
 		if (state == GLUT_DOWN){
-			if (selected){
+		if (selected){
 				selected = false;
 				lastSelectObjectIndex = selectedObjectIndex;
 				selectedObjectIndex = 0;
@@ -397,8 +436,8 @@ void mousePressed(int button, int state, int x, int y) {
 		else{
 			moveCamara = false;
 		}
+		}
 	}
-}
 
 
 void keyboardKey(unsigned char key, int x, int y) {
@@ -430,7 +469,7 @@ void keyboardKey(unsigned char key, int x, int y) {
 }
 
 void SpecialkeyboardKey(int key, int x, int y){
-	
+
 }
 
 /////////////////////////////////////////////////////////////////////// SETUP
