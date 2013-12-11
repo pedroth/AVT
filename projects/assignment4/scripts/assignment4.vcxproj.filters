@@ -12,6 +12,9 @@
     <ClCompile Include="..\src\WorldObject.cpp" />
     <ClCompile Include="..\src\WorldObjectManager.cpp" />
     <ClCompile Include="..\src\ColorMaterial.cpp" />
+    <ClCompile Include="..\src\Mirror.cpp" />
+    <ClCompile Include="..\src\Symmetry.cpp" />
+    <ClCompile Include="..\src\MaterialManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -25,6 +28,9 @@
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\WorldObjectManager.h" />
     <ClInclude Include="..\src\ColorMaterial.h" />
+    <ClInclude Include="..\src\Mirror.h" />
+    <ClInclude Include="..\src\Symmetry.h" />
+    <ClInclude Include="..\src\MaterialManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -33,16 +39,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\shaderSrc\myFS.glsl">
+    <None Include="..\resources\shaderSrc\myFS.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\shaderSrc\myVS.glsl">
+    <None Include="..\resources\shaderSrc\myVS.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\shaderSrc\selectedVS.glsl">
+    <None Include="..\resources\shaderSrc\selectedFS.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\shaderSrc\selectedFS.glsl">
+    <None Include="..\resources\shaderSrc\selectedVS.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

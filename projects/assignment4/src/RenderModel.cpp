@@ -4,8 +4,9 @@
 
 #include <map>
 
-RenderModel::RenderModel(const std::vector<Vertex> &verts, const std::vector<Normal> &norm, const std::vector<TexCoord> &tex) :
-m_vertices(verts), m_normals(norm), m_texCoords(tex),
+RenderModel::RenderModel(const std::string& name, const std::vector<Vertex> &verts, 
+	const std::vector<Normal> &norm, const std::vector<TexCoord> &tex) :
+m_name(name), m_vertices(verts), m_normals(norm), m_texCoords(tex),
 m_vaoName(0), m_vertboName(0), m_normboName(0), m_texboName(0)
 {
 	setupModel();
@@ -83,6 +84,10 @@ void RenderModel::vaoName(GLuint vao)
 GLuint RenderModel::vaoName()
 {
 	return m_vaoName;
+}
+const std::string& RenderModel::name() const
+{
+	return m_name;
 }
 size_t RenderModel::vertexNum()
 {

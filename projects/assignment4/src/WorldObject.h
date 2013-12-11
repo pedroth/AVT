@@ -11,15 +11,17 @@ private:
 	glm::vec3 scale;
 	ColorMaterial color;
 	RenderModel* mesh;
+	std::string name;
 	int symmetryAxis;
 
 public:
-	WorldObject(RenderModel* mesh);
+	WorldObject(std::string name, RenderModel* mesh);
 	glm::quat getQuaternion();
 	glm::vec3 getPosition();
 	glm::vec3 getScale();
 	ColorMaterial getColor();
 	RenderModel* getMesh();
+	std::string getName();
 	void setQuaternion(glm::quat quaternion);
 	void setPosition(glm::vec3 position);
 	void setScale(glm::vec3 scale);
@@ -28,9 +30,6 @@ public:
 	void translate(glm::vec3 translate);
 	void rotate(glm::quat rotate);
 	glm::mat4x4 getTransformationMatrix();
-	glm::mat4x4 getXAxisTransformationMatrix();
-	glm::mat4x4 getZAxisTransformationMatrix();
-	glm::mat4x4 getXZAxisTransformationMatrix();
 	void draw(ShaderProgram* shader);
 	void setSymmetryAxis(int axis);
 };

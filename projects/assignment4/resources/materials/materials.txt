@@ -1,0 +1,9 @@
+Square.mtl
+MedTri.mtl
+BigTri1.mtl
+BigTri2.mtl
+SmallTri1.mtl
+SmallTri2.mtl
+Quad.mtl
+BackPlane.mtl
+Monkey.mtl

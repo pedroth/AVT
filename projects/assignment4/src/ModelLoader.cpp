@@ -8,12 +8,12 @@
 
 #include "ModelLoader.h"
 
-RenderModel *ModelLoader::loadModel(const std::string& pathString)
+RenderModel *ModelLoader::loadModel(std::string modelName, const std::string& pathString)
 {
 	std::string objString = readFromFile(pathString);
 	parseString(objString);
 	prepareModelData();
-	createRenderModel();
+	createRenderModel(modelName);
 	cleanup();
 	return m_loadedModel;
 }
@@ -106,9 +106,9 @@ void ModelLoader::prepareModelData()
 	}
 }
 
-void ModelLoader::createRenderModel()
+void ModelLoader::createRenderModel(std::string modelName)
 {
-	m_loadedModel = new RenderModel(m_vertexData, m_normalData, m_texCoordData);
+	m_loadedModel = new RenderModel(modelName, m_vertexData, m_normalData, m_texCoordData);
 }
 
 void ModelLoader::cleanup()

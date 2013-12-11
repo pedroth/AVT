@@ -18,7 +18,7 @@ public:
 	static RenderModelManager *instance();
 
 	//if there was already a rendermodel with that name it might be lost.
-	void addRenderModel(std::string name, RenderModel *model);
+	void addRenderModel(RenderModel *model);
 	RenderModel *getRenderModel(const std::string &name);
 
 	~RenderModelManager();

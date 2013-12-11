@@ -17,7 +17,7 @@ private:
 	void parseString(const std::string &objString);
 	void parseLine(const std::string &line);
 	void prepareModelData();
-	void createRenderModel();
+	void createRenderModel(std::string modelName);
 
 	void parseVertex(std::istringstream &stream);
 	void parseNormal(std::istringstream &stream);
@@ -25,7 +25,7 @@ private:
 	void parseFace(std::istringstream &stream);
 	void parseVertexIndexes(const std::string &vertexString);
 public:
-	RenderModel *loadModel(const std::string &pathString);
+	RenderModel *loadModel(std::string modelName, const std::string &pathString);
 	void cleanup();
 };
 

@@ -10,9 +10,9 @@ RenderModelManager* RenderModelManager::instance()
 	return _instance;
 }
 
-void RenderModelManager::addRenderModel(std::string name, RenderModel *model)
+void RenderModelManager::addRenderModel(RenderModel *model)
 {
-	_renderModels[name] = model;
+	_renderModels[model->name()] = model;
 }
 
 RenderModel *RenderModelManager::getRenderModel(const std::string &name)
