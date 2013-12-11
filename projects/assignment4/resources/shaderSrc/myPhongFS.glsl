@@ -36,7 +36,7 @@ vec3 computeDiffuse(in vec3 normal, in vec3 lightDir)
 
 vec3 computeSpecular(in vec3 normal, in vec3 lightDir, in vec3 eyeDir)
 {
-	vec3 R = reflect(lightDir, normal);
+	vec3 R = reflect(-lightDir, normal);
 	float RdotE = max(dot(R,eyeDir),0.0);
 	float specFactor = pow(RdotE,MaterialShininess);
 	vec3 spec = specFactor * LightSpecular * MaterialSpecular;
@@ -61,7 +61,7 @@ float computeAttenuation(in float lightDistance)
 
 void main(void)
 {
-	vec3 eyeDistance = vec3(0.0) + exViewPosition;
+	vec3 eyeDistance = vec3(0.0) - exViewPosition;
 	vec3 eyeDir = normalize(eyeDistance);
 	vec4 viewLightPos = ViewMatrix * vec4(LightPosition,1.0);
 	vec3 lightDistance = viewLightPos.xyz - exViewPosition;

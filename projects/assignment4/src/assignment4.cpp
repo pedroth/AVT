@@ -218,6 +218,7 @@ void drawScene() {
 	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	ModelMatrixStack.loadMat(glm::mat4(1.0f));
 	world->draw(shader);
 
 	//TODO remove

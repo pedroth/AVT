@@ -15,6 +15,7 @@
     <ClCompile Include="..\src\Mirror.cpp" />
     <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\MaterialManager.cpp" />
+    <ClCompile Include="..\src\MatrixStack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="..\src\Mirror.h" />
     <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\MaterialManager.h" />
+    <ClInclude Include="..\src\MatrixStack.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -49,6 +51,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\resources\shaderSrc\selectedVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongVS.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
