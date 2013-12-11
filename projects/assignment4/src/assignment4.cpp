@@ -282,25 +282,7 @@ glm::vec3 pickMouse(int x, int y) {
 	glm::vec4 lambda(xclip, yclip, 0.0f,1.0f);
 	lambda = glm::inverse(M) * lambda;
 
-	int minIndex = 0;
-	float minD = 1E99;
-	for (int i = 0; i < selectedObject.size(); i++) {
-		WorldObject wo = *(tangram->at(selectedObject[i]));
-		glm::vec3 pos = wo.getPosition();
-		float xWoCenter = pos[0];
-		float yWoCenter = pos[1];
-		float d = (lambda[0] - xWoCenter) * (lambda[0] - xWoCenter) + (lambda[1]- yWoCenter) * (lambda[1]- yWoCenter);
-		if (minD > d) {
-			minIndex = i;
-			minD = d;
-		}
-	}
-	//selectedObjectIndex = minIndex;
-	//selectedObjectIndex = 0;
 	return glm::vec3(lambda[0], lambda[1], 0);
-	//std::cout << "x:" << xOnPlane << "		y	" << yOnPlane << std::endl;
-	//WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-	//selectdObj->setPosition(glm::vec3(lambda[0], lambda[1], 0));
 }
 
 void mouseMotion(int x, int y)  {
