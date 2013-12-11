@@ -138,11 +138,11 @@ void createShaderProgram() {
 	shaderManager->add("PhongShader", phong);
 
 	//glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
-	glm::vec3 lampPos = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 lampPos = glm::vec3(0.0f, 0.0f, 5.0f);
 	glm::vec3 lampAmb = glm::vec3(0.1f);
 	glm::vec3 lampDiff = glm::vec3(1.0f);
 	glm::vec3 lampSpec = glm::vec3(1.0f);
-	glm::vec3 lampAtte = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 lampAtte = glm::vec3(1.0f, 0.0f, 0.005f);
 	float lampRange = -1.0f;
 
 	phong->bind();
@@ -211,6 +211,17 @@ glm::mat4 testSubjectMM = glm::translate(glm::mat4(), glm::vec3(-4.0f, 4.0f, 1.0
 RenderModel *testSubject = 0;
 ColorMaterial *testSubjectMat = 0;
 
+void drawTestSubject()
+{
+	//TODO remove
+	ShaderProgram* phong = ShaderManager::getInstance()->get("PhongShader");
+	phong->bind();
+	testSubjectMat->sendToShader(phong);
+	phong->sendUniformMat4("ModelMatrix", testSubjectMM);
+	testSubject->drawModel();
+	phong->unbind();
+}
+
 void drawScene() {
 	glClearStencil(0); // this is the default value
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -225,13 +236,7 @@ void drawScene() {
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
 	world->draw(shader);
 
-	//TODO remove
-	ShaderProgram* phong = ShaderManager::getInstance()->get("PhongShader");
-	phong->bind();
-	testSubjectMat->sendToShader(phong);
-	phong->sendUniformMat4("ModelMatrix",testSubjectMM);
-	testSubject->drawModel();
-	phong->unbind();
+	drawTestSubject();
 }
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
@@ -273,6 +278,12 @@ void timer(int value)
 	glutSetWindowTitle(s.c_str());
 	FrameCount = 0;
 	glutTimerFunc(1000, timer, 0);
+}
+
+void mouseWheel(int button, int dir, int x, int y)
+{
+	float factor = 1.0f - 0.09 * -dir;
+	proj = glm::scale(proj, glm::vec3(factor));
 }
 
 /* need a pen to explain */
@@ -583,7 +594,7 @@ void loadModels() {
 	tangram->operator[]("BackPlane") = aux;
 
 	//TODO remove
-	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Sphere.obj");
+	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Monkey.obj");
 }
 
 void loadMaterials()
@@ -610,6 +621,7 @@ void setupCallbacks()
 	glutTimerFunc(0, timer, 0);
 	glutMouseFunc(mousePressed);
 	glutMotionFunc(mouseMotion);
+	glutMouseWheelFunc(mouseWheel);
 	glutKeyboardFunc(keyboardKey);
 	glutSpecialFunc(SpecialkeyboardKey);
 }
