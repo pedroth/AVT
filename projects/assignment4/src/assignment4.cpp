@@ -342,11 +342,11 @@ void mouseMotion(int x, int y)  {
 			std::cerr << "Error on move objects function" << std::endl;
 		}
 
-		WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-		selectdObj->setPosition(lambda);
+		//WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		//selectdObj->setPosition(lambda);
 
-		//selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-		//selectdObj->translate(glm::vec3(x, y, 0));
+		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
+		selectdObj->translate(glm::vec3(x, y, 0));
 	}
 	else if (selected && rotateState){
 		float aux = (float)fmod(dx, 2);
@@ -403,20 +403,20 @@ void mousePressed(int button, int state, int x, int y) {
 	}
 	if (button == GLUT_LEFT_BUTTON){
 		if (state == GLUT_DOWN){
-		if (selected){
-				selected = false;
-				lastSelectObjectIndex = selectedObjectIndex;
-				selectedObjectIndex = 0;
-				changeSelectedObjectShader();
-			}
+			if (selected){
+					selected = false;
+					lastSelectObjectIndex = selectedObjectIndex;
+					selectedObjectIndex = 0;
+					changeSelectedObjectShader();
+				}
 			
-			moveCamara = true;
-			mx = x;
-			my = y;
-		}
-		else{
-			moveCamara = false;
-		}
+				moveCamara = true;
+				mx = x;
+				my = y;
+			}
+			else{
+				moveCamara = false;
+			}
 		}
 	}
 
