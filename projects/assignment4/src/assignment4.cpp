@@ -75,7 +75,8 @@ void createShaderProgram() {
 	myShader->addAttrib("inPosition", RenderModel::POSITION);
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
-	myShader->addUniform("Color");
+	//myShader->addUniform("Color");
+	myShader->addUniform("MaterialDiffuse");
 	myShader->addUniform("ModelMatrix");
 	myShader->addUniform("LightDirection");
 	myShader->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
@@ -95,7 +96,8 @@ void createShaderProgram() {
 	selectShader->addAttrib("inPosition", RenderModel::POSITION);
 	selectShader->addAttrib("inNormal", RenderModel::NORMAL);
 	selectShader->addAttrib("inTex", RenderModel::TEX);
-	selectShader->addUniform("Color");
+	//selectShader->addUniform("Color");
+	selectShader->addUniform("MaterialDiffuse");
 	selectShader->addUniform("ModelMatrix");
 	selectShader->addUniform("LightDirection");
 	selectShader->addUniform("Time0_1");
@@ -117,7 +119,7 @@ void createShaderProgram() {
 	phong->addAttrib("inPosition", RenderModel::POSITION);
 	phong->addAttrib("inNormal", RenderModel::NORMAL);
 	phong->addAttrib("inTex", RenderModel::TEX);
-	phong->addUniform("Color");
+	//phong->addUniform("Color");
 	phong->addUniform("ModelMatrix");
 	phong->addUniform("LightDirection");
 	phong->addUniform("LightPosition");
@@ -136,7 +138,7 @@ void createShaderProgram() {
 	shaderManager->add("PhongShader", phong);
 
 	//glm::vec3 lightDir = glm::normalize(glm::vec3(-1.0f, 0.0f, -1.0f));
-	glm::vec3 lampPos = glm::vec3(2.0f, -2.0f, 1.0f);
+	glm::vec3 lampPos = glm::vec3(0.0f, 0.0f, 1.0f);
 	glm::vec3 lampAmb = glm::vec3(0.1f);
 	glm::vec3 lampDiff = glm::vec3(1.0f);
 	glm::vec3 lampSpec = glm::vec3(1.0f);
@@ -216,7 +218,8 @@ void drawScene() {
 	glm::mat4x4 view = orbit();
 	writeSharedMatrices(view, proj);
 
-	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));

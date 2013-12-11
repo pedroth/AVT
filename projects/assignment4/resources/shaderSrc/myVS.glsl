@@ -3,7 +3,7 @@
 in vec3 inPosition;
 in vec3 inNormal;
 in vec2 inTex;
-uniform vec3 Color;
+uniform vec3 MaterialDiffuse;
 out vec3 exColor;
 
 uniform mat4 ModelMatrix;
@@ -25,9 +25,9 @@ void main(void) {
 	float diffInten = max(NdotL,0.0);
 
 	//exColor = LightDirection;
-	//exColor = Color;
+	//exColor = MaterialDiffuse;
 	//exColor = N;
-	exColor = diffInten * Color;
+	exColor = diffInten * MaterialDiffuse;
 
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(inPosition,1.0f);
 }

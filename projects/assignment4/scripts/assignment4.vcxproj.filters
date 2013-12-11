@@ -33,6 +33,7 @@
     <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\MaterialManager.h" />
     <ClInclude Include="..\src\MatrixStack.h" />
+    <ClInclude Include="..\src\SymmetryExt.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
