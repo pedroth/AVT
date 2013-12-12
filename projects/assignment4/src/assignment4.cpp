@@ -282,7 +282,7 @@ void timer(int value)
 
 void mouseWheel(int button, int dir, int x, int y)
 {
-	float factor = 1.0f - 0.09 * -dir;
+	float factor = 1.0f - 0.09f * -dir;
 	proj = glm::scale(proj, glm::vec3(factor));
 }
 
