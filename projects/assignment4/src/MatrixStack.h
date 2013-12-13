@@ -9,13 +9,24 @@ class MatrixStack {
 	std::vector<Mat> _mats;
 	Mat _currMat;
 public:
+	//Create a new MatrixStack.
+	//Current matrix stack is default.
 	MatrixStack();
+	//Create a new MatrixStack.
+	//Current matrix is given.
 	MatrixStack(Mat initMat);
+	//Set current matrix.
 	void loadMat(Mat mat);
+	//Multiply mat by current matrix.
+	//curr = mat * curr;
 	void multiplyMat(Mat mat);
+	//Push current matrix onto the stack.
 	void push();
+	//Pop stack top onto current matrix.
 	void pop();
+	//Return copy of current matrix.
 	Mat current();
+	//Return matrixstack size.
 	unsigned int stackSize();
 };
 

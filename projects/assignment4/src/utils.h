@@ -5,6 +5,7 @@
 
 extern const float PI_CONSTANT;
 float deg2Rad(float degrees);
+float rad2Deg(float rads);
 int positiveModulo(int i, int n);
 std::string readFromFile(const std::string &filePath);
 bool isOpenGLError();
