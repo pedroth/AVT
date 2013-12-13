@@ -6,6 +6,8 @@
 #include "engine.h"
 #include <FreeImage.h>
 
+#include "test\SymmetryExtTests.h"
+
 #include "WorldObjectManager.h"
 
 #define CAPTION "Hello New World"
@@ -282,7 +284,7 @@ void timer(int value)
 
 void mouseWheel(int button, int dir, int x, int y)
 {
-	float factor = 1.0f - 0.09 * -dir;
+	float factor = 1.0f - 0.09f * -dir;
 	proj = glm::scale(proj, glm::vec3(factor));
 }
 
@@ -698,6 +700,8 @@ void init(int argc, char* argv[])
 	buildTangram();
 	cameraSetup();
 	initTime();
+	//TODO remove
+	//testSymmetrys();
 }
 
 int main(int argc, char* argv[])

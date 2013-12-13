@@ -16,6 +16,10 @@
     <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\MaterialManager.cpp" />
     <ClCompile Include="..\src\MatrixStack.cpp" />
+    <ClCompile Include="..\src\SymmetryExt.cpp" />
+    <ClCompile Include="..\src\test\SymmetryExtTests.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -34,11 +38,17 @@
     <ClInclude Include="..\src\MaterialManager.h" />
     <ClInclude Include="..\src\MatrixStack.h" />
     <ClInclude Include="..\src\SymmetryExt.h" />
+    <ClInclude Include="..\src\test\SymmetryExtTests.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
       <UniqueIdentifier>{830160af-e22d-41fd-811f-c69d6e9f45c8}</UniqueIdentifier>
       <Extensions>.glsl</Extensions>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{d2b666b8-8e1e-4b23-88de-8d2666a6fed5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

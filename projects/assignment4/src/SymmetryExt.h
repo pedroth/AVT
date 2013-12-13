@@ -1,41 +1,129 @@
 #pragma once
 
-#include <set>
 #include <map>
 #include <string>
 
-//TODO define SymmetryI* comparator
+#include "ShaderProgram.h"
+#include "WorldObject.h"
+ 
+//TODO define Symmetry comparator
+//TODO define Symmetry "equals"
+//It is assumed that Symmetrys with the same name are the same object.
 
 class SymmetryI {
+	//The symmetrys name.
 	std::string _name;
+public:
+	typedef std::map<std::string, SymmetryI*> children_type;
 protected:
-	// Symmetry's children. Protected-access is READ-ONLY
-	std::set<SymmetryI *> _children;
+	//Symmetry's children. Protected-access is READ-ONLY
+	children_type _children;
+	//Symmetry's parent. Can be nullptr.
+	SymmetryI *_parent;
 protected:
 	SymmetryI(std::string name);
 public:
-	virtual ~Symmetry();
-	virtual void draw() = 0;
+	//Reassigns the parent of this' children to the parent of this.
+	virtual ~SymmetryI();
+	//Each symmetry should know how to draw itself using it's parents.
+	virtual void draw(ShaderProgram *program) = 0;
+	
+	//Adds a child to this node. Also sets the parent of the child if
+	//not already set to this.
 	void addChild(SymmetryI *child);
+	//Removes a child from this node if it's really a child of this symmetry.
+	//The child's parent is removed.
 	void removeChild(SymmetryI *child);
+	//Sets this node's parent to parent. Also adds this node to the 
+	//parent's children if not already a child of it.
+	void setParent(SymmetryI *parent);
+	//Detachs this symmetry from it's parent and children.
+	void detach();
+	
+	//Returns this symmetry's children set/map.
+	//The set/map should only be READ.
+	const children_type &getChildren();
+
+	//Check if child is a child of this symmetry.
+	bool isChild(SymmetryI *child);
+	//Check if parent is the parent of this symmetry.
+	bool isParent(SymmetryI *parent);
+
+	SymmetryI *parent();
 	std::string name() const;
 };
 
 class SymmWorldObjContainer : public SymmetryI {
-	std::map<std::string, WorldObject*> _worldObjects;
+	typedef std::map<std::string, WorldObject*> world_obj_type;
+	world_obj_type _worldObjects;
 public:
+	//Create a SymmWorldObjContainer with the given name.
 	SymmWorldObjContainer(std::string name);
-	void draw();
+	//Draws all the WorldObjects of this Container.
+	void draw(ShaderProgram *program);
+	//Adds a WorldObject to this container.
+	//It is assumed that WorldObjects with the same name are the same.
 	void addWorldObject(WorldObject *object);
-	void removeWorldObject(std::string objectName); //or the object itself...
+	//Removes the given WorldObject from this container if it exists.
+	void removeWorldObject(WorldObject *object);
+	//Returns the WorldObject with the given name if it is present
+	//in this container.
+	WorldObject *getWorldObject(std::string objectName);
 };
 
 class RealSymmetry : public SymmetryI {
-protected:
-	SymmetryI *_parent;
 public:
-	virtual ~RealSymmetry();// change children's parent to this' parent
-	RealSymmetry(SymmetryI *parent);
-	void setParent(SymmetryI *parent);
-	//virtual void draw()=0;
+	RealSymmetry(std::string name);
+	//virtual void draw(ShaderProgram *program)=0;
+};
+
+class SymmetryTree {
+	typedef std::map<std::string, RealSymmetry*> symm_map_type;
+
+	//The Tree's name.
+	std::string _name;
+	//WorldObject container.
+	SymmWorldObjContainer *_container;
+	//All the symmetrys currently in this Tree.
+	symm_map_type _symmetrys;
+	//The deepest symmetrys of this Tree.
+	symm_map_type _deepesSymmetrys;
+public:
+	//Adds a symmetry with the container as parent.
+	void addSymmetry(RealSymmetry *symmetry);
+	//Adds a symmetry with parent as parent if it is in this Tree.
+	void addSymmetry(RealSymmetry *symmetry, RealSymmetry *parent);
+	//Adds a symmetry between parent and it's children. The added symmetry
+	//becomes parent of the parent's children.
+	void addSymmetryBetweenParentAndChildren(RealSymmetry *symmetry, RealSymmetry *parent);
+	//Removes a symmetry from the Tree reassigning it's children to it's parent.
+	//It is only removed if present in the Tree.
+	void removeSymmetry(RealSymmetry *symmetry);
+	//Returns the symmetry with the given name in this Tree if it exists.
+	RealSymmetry *getSymmetry(std::string symmName);
+
+	//Adds a WorldObject to the container.
+	void addWorldObject(WorldObject *object);
+	//Removes a WorldObject from the container if it is there.
+	void removeWorldObject(WorldObject *object);
+	//Returns the WorldObject with the given name in this Tree if it exists.
+	WorldObject *getWorldObject(std::string objName);
+
+	//Draws all the symmetrys in this Tree.
+	//When implemented will probably only call all the deepest Symmetrys.
+	//The ones without children.
+	void draw(ShaderProgram *program);
+
+public:
+	//Construct an empty SymmetryTree with the given name.
+	SymmetryTree(std::string name);
+	//Destroy this SymmetryTree. Does not destroy any RealSymmetrys.
+	//All RealSymmetrys have their parent removed.
+	~SymmetryTree();
+
+private:
+	//Update the deepest symmetrys set/map.
+	//FIXME currently assumes that all children of a symmetry
+	//are RealSymmetrys and therefore can be casted to that type.
+	void updateDeepestSymmetrys();
 };
