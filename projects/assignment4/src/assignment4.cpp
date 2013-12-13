@@ -479,9 +479,11 @@ void keyboardKey(unsigned char key, int x, int y) {
 	}
 	if (key == 'p'){
 		BYTE* imageData = new BYTE[WinX * WinY * 3];
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glReadPixels(0, 0, WinX, WinY, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+		glPixelStorei(GL_PACK_ALIGNMENT, 4);
 
-		FIBITMAP* image = FreeImage_ConvertFromRawBits(imageData, WinX, WinY, 3 * WinX, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
+		FIBITMAP* image = FreeImage_ConvertFromRawBits(imageData, WinX, WinY, WinX*3, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
 		FreeImage_Save(FIF_BMP, image, "../resources/sceneImage.bmp", 0);
 
 		FreeImage_Unload(image);
