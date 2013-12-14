@@ -33,12 +33,12 @@ glm::mat4 Mirror3D::computeTransform()
 	float z2 = _planeNormal.z * _planeNormal.z;
 	glm::mat3 nSquared(x2, xy, xz, xy, y2, yz, xz, yz, z2);
 	glm::mat3 I(1.0f);
-	glm::mat3 reflection = I - 2 * nSquared;
+	glm::mat4 reflection = glm::mat4(I - 2 * nSquared);
 
-	glm::mat4 transform = glm::translate(glm::mat4(I), -_planePoint);
-	transform = glm::mat4(reflection) * transform;
-	transform = glm::translate(transform, _planePoint);
+	glm::mat4 translate = glm::translate(glm::mat4(1.0f), _planePoint);
+	glm::mat4 invTranslate = glm::translate(glm::mat4(1.0f), -_planePoint);
 
+	glm::mat4 transform = invTranslate * reflection * translate;
 	return transform;
 }
 std::vector<TransformedWO> Mirror3D::getGhostTransfWO()
