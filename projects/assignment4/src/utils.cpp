@@ -8,7 +8,11 @@
 const float PI_CONSTANT = 3.14159265359f;
 float deg2Rad(float degrees)
 {
-	return (degrees / 180.0f) * PI_CONSTANT;
+	return degrees * (PI_CONSTANT / 180.0f);
+}
+float rad2Deg(float rads)
+{
+	return rads * (180.0f / PI_CONSTANT);
 }
 
 int positiveModulo(int i, int n) {

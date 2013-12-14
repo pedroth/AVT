@@ -24,6 +24,7 @@ void WorldObjectManager::draw(ShaderProgram* shader) {
 		}
 		i++;
 	}
+	glStencilFunc(GL_ALWAYS, 0, -1);
 }
 
 void WorldObjectManager::setObjectShader(std::string name, ShaderProgram *shader)

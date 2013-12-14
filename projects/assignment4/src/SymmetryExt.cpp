@@ -64,12 +64,20 @@ WorldObject *SymmetryTree::getWorldObject(std::string name)
 }
 void SymmetryTree::draw(ShaderProgram *program)
 {
-	for (symm_map_type::iterator it = _deepesSymmetrys.begin();
-		it != _deepesSymmetrys.end();
+	//TODO use this to for updating each symmetry drawn objects
+	//for (symm_map_type::iterator it = _deepesSymmetrys.begin();
+	//	it != _deepesSymmetrys.end();
+	//	++it)
+	//{
+	//	it->second->draw(program);
+	//}
+	for (symm_map_type::iterator it = _symmetrys.begin();
+		it != _symmetrys.end();
 		++it)
 	{
 		it->second->draw(program);
 	}
+	glFrontFace(GL_CCW);
 }
 SymmetryTree::SymmetryTree(std::string name)
 : _name(name), _container(new SymmWorldObjContainer(name + ".Container")),
@@ -135,6 +143,16 @@ SymmetryI::~SymmetryI()
 	{
 		it->second->setParent(_parent);
 	}
+}
+std::vector<TransformedWO> SymmetryI::getAllTransfWO()
+{
+	std::vector<TransformedWO> originals = getOriginalTransfWO();
+	std::vector<TransformedWO> ghosts = getGhostTransfWO();
+	std::vector<TransformedWO> all;
+	all.reserve(originals.size() + ghosts.size());
+	all.insert(all.end(),originals.begin(), originals.end());
+	all.insert(all.end(), ghosts.begin(), ghosts.end());
+	return all;
 }
 void SymmetryI::addChild(SymmetryI *child)
 {
@@ -212,6 +230,20 @@ std::string SymmetryI::name() const
 SymmWorldObjContainer::SymmWorldObjContainer(std::string name)
 : SymmetryI(name), _worldObjects()
 {}
+std::vector<TransformedWO> SymmWorldObjContainer::getOriginalTransfWO()
+{
+	std::vector<TransformedWO> ori;
+	ori.reserve(_worldObjects.size());
+	for (world_obj_type::iterator it = _worldObjects.begin();
+		it != _worldObjects.end();
+		++it)
+		ori.push_back(TransformedWO(it->second, glm::mat4(),true));
+	return ori;
+}
+std::vector<TransformedWO> SymmWorldObjContainer::getGhostTransfWO()
+{
+	return std::vector<TransformedWO>();
+}
 void SymmWorldObjContainer::draw(ShaderProgram *program)
 {
 	for (world_obj_type::iterator it = _worldObjects.begin();
@@ -246,3 +278,28 @@ WorldObject *SymmWorldObjContainer::getWorldObject(std::string name)
 RealSymmetry::RealSymmetry(std::string name)
 : SymmetryI(name)
 {}
+RealSymmetry::~RealSymmetry()
+{}
+std::vector<TransformedWO> RealSymmetry::getOriginalTransfWO()
+{
+	return _parent->getAllTransfWO();
+}
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
+TransformedWO::TransformedWO(WorldObject *obj, glm::mat4 trans, bool ccw)
+: transform(trans), object(obj), frontFaceCCW(ccw)
+{}
+void TransformedWO::draw(ShaderProgram *prog)
+{
+	if (frontFaceCCW)
+		glFrontFace(GL_CCW);
+	else
+		glFrontFace(GL_CW);
+
+	ModelMatrixStack.push();
+	ModelMatrixStack.multiplyMat(transform);
+	object->draw(prog);
+	ModelMatrixStack.pop();
+}

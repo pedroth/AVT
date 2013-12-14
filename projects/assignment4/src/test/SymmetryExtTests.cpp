@@ -11,6 +11,14 @@ void TestChildSymm::draw(ShaderProgram *program)
 TestChildSymm::TestChildSymm(std::string name)
 : RealSymmetry(name)
 {}
+std::vector<TransformedWO> TestChildSymm::getOriginalTransfWO()
+{
+	return std::vector<TransformedWO>();
+}
+std::vector<TransformedWO> TestChildSymm::getGhostTransfWO()
+{
+	return std::vector<TransformedWO>();
+}
 
 SymmetryTree *testTree;
 const std::string sym1name = "Sym1";

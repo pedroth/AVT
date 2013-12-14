@@ -13,7 +13,6 @@
     <ClCompile Include="..\src\WorldObjectManager.cpp" />
     <ClCompile Include="..\src\ColorMaterial.cpp" />
     <ClCompile Include="..\src\Mirror.cpp" />
-    <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\MaterialManager.cpp" />
     <ClCompile Include="..\src\MatrixStack.cpp" />
     <ClCompile Include="..\src\SymmetryExt.cpp" />
@@ -36,7 +35,6 @@
     <ClInclude Include="..\src\WorldObjectManager.h" />
     <ClInclude Include="..\src\ColorMaterial.h" />
     <ClInclude Include="..\src\Mirror.h" />
-    <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\MaterialManager.h" />
     <ClInclude Include="..\src\MatrixStack.h" />
     <ClInclude Include="..\src\SymmetryExt.h" />

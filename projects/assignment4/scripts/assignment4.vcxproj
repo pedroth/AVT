@@ -23,7 +23,6 @@
     <ClCompile Include="..\src\Shader.cpp" />
     <ClCompile Include="..\src\ShaderManager.cpp" />
     <ClCompile Include="..\src\ShaderProgram.cpp" />
-    <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\SymmetryExt.cpp" />
     <ClCompile Include="..\src\test\SymmetryExtTests.cpp" />
     <ClCompile Include="..\src\Texture.cpp" />
@@ -44,7 +43,6 @@
     <ClInclude Include="..\src\Shader.h" />
     <ClInclude Include="..\src\ShaderManager.h" />
     <ClInclude Include="..\src\ShaderProgram.h" />
-    <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\SymmetryExt.h" />
     <ClInclude Include="..\src\test\SymmetryExtTests.h" />
     <ClInclude Include="..\src\Texture.h" />

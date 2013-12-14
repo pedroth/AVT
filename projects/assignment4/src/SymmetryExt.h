@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include <string>
 
 #include "ShaderProgram.h"
@@ -9,6 +10,8 @@
 //TODO define Symmetry comparator
 //TODO define Symmetry "equals"
 //It is assumed that Symmetrys with the same name are the same object.
+
+struct TransformedWO;
 
 class SymmetryI {
 	//The symmetrys name.
@@ -22,9 +25,17 @@ protected:
 	SymmetryI *_parent;
 protected:
 	SymmetryI(std::string name);
+
+protected:
+	virtual std::vector<TransformedWO> getOriginalTransfWO()=0;
+	virtual std::vector<TransformedWO> getGhostTransfWO() = 0;
 public:
 	//Reassigns the parent of this' children to the parent of this.
 	virtual ~SymmetryI();
+
+	//Returns all the Transformed World objects by this Symmetry.
+	//Originals and ghosts.
+	std::vector<TransformedWO> getAllTransfWO();
 	//Each symmetry should know how to draw itself using it's parents.
 	virtual void draw(ShaderProgram *program) = 0;
 	
@@ -56,6 +67,9 @@ public:
 class SymmWorldObjContainer : public SymmetryI {
 	typedef std::map<std::string, WorldObject*> world_obj_type;
 	world_obj_type _worldObjects;
+protected:
+	std::vector<TransformedWO> getOriginalTransfWO();
+	std::vector<TransformedWO> getGhostTransfWO();
 public:
 	//Create a SymmWorldObjContainer with the given name.
 	SymmWorldObjContainer(std::string name);
@@ -72,9 +86,25 @@ public:
 };
 
 class RealSymmetry : public SymmetryI {
+protected:
+	std::vector<TransformedWO> getOriginalTransfWO();
+	//virtual std::set<TransformedWO *> getGhostTransfWO()=0;
 public:
 	RealSymmetry(std::string name);
+	virtual ~RealSymmetry();
 	//virtual void draw(ShaderProgram *program)=0;
+};
+
+struct TransformedWO {
+	glm::mat4 transform;
+	WorldObject *object;
+	bool frontFaceCCW;
+public:
+	TransformedWO(WorldObject *object, glm::mat4 transform, bool ccw);
+	void draw(ShaderProgram *program);
+	//getTransform
+	//getObject
+	//getOwner
 };
 
 class SymmetryTree {

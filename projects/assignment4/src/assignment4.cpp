@@ -6,6 +6,8 @@
 #include "engine.h"
 #include <FreeImage.h>
 
+#include "SymmetryExt.h"
+#include "Mirror.h"
 #include "test\SymmetryExtTests.h"
 
 #include "WorldObjectManager.h"
@@ -24,6 +26,11 @@ const std::string ModelPath = ResourcesPath + ModelDir;
 const std::string MaterialPath = ResourcesPath + MaterialDir;
 
 const std::string MaterialListFile = "materials.txt";
+
+
+const std::string SymmetryTreeName = "MySymmetryTree";
+const std::string X0mirrorName = "X-Mirror";
+const std::string Y0mirrorName = "Y-Mirror";
 
 
 int WinX = 640, WinY = 480;
@@ -48,8 +55,10 @@ GLuint sharedMatricesBufferObject = 0;
 float oldTime;
 float currentTime;
 float time;
+
+typedef std::map<std::string, WorldObject*> tangram_map_type;
 /* map of tangram objects */
-std::map<std::string, WorldObject *> * tangram;
+tangram_map_type * tangram;
 
 bool selected = false;
 bool rotateState = false;
@@ -61,6 +70,8 @@ int lastSelectObjectIndex = 0;
 int symmetryAxis = 0;
 
 WorldObjectManager *world = new WorldObjectManager();
+SymmetryTree *MySymmetryTree;
+Mirror3D *X0mirror, *Y0mirror;
 
 /////////////////////////////////////////////////////////////////////// SHADERs
 void createSharedUniformBlocks() {
@@ -244,8 +255,12 @@ void drawScene() {
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
 	world->draw(shader);
 
+	MySymmetryTree->draw(shader);
+
 	drawTestSubject();
 }
+
+void cleanupSymmetrys();
 
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
@@ -253,6 +268,7 @@ void cleanup()
 {
 	destroyShaderProgram();
 	destroyBufferObjects();
+	cleanupSymmetrys();
 }
 
 void display()
@@ -406,7 +422,7 @@ void mousePressed(int button, int state, int x, int y) {
 			selected = true;
 			lastSelectObjectIndex = selectedObjectIndex;
 			selectedObjectIndex = pickedObject[index-2];
-		changeSelectedObjectShader();
+			changeSelectedObjectShader();
 
 			mx = x;
 			my = y;
@@ -450,7 +466,7 @@ void keyboardKey(unsigned char key, int x, int y) {
 	}
 
 	if (key == 'v'){
-		std::map<std::string, WorldObject*> tangramObject = *tangram;
+		tangram_map_type tangramObject = *tangram;
 		
 		cameraCenter = tangramObject["BackPlane"]->getPosition();
 		proj = glm::ortho(-4.0f, 4.0f, -4.0f, 4.0f, 0.f, 50.f);
@@ -469,9 +485,11 @@ void keyboardKey(unsigned char key, int x, int y) {
 	}
 	if (key == 'p'){
 		BYTE* imageData = new BYTE[WinX * WinY * 3];
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glReadPixels(0, 0, WinX, WinY, GL_BGR, GL_UNSIGNED_BYTE, imageData);
+		glPixelStorei(GL_PACK_ALIGNMENT, 4);
 
-		FIBITMAP* image = FreeImage_ConvertFromRawBits(imageData, WinX, WinY, 3 * WinX, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
+		FIBITMAP* image = FreeImage_ConvertFromRawBits(imageData, WinX, WinY, WinX*3, 24, 0x0000FF, 0xFF0000, 0x00FF00, false);
 		FreeImage_Save(FIF_BMP, image, "../resources/sceneImage.bmp", 0);
 
 		FreeImage_Unload(image);
@@ -488,7 +506,7 @@ void SpecialkeyboardKey(int key, int x, int y){
 
 /////////////////////////////////////////////////////////////////////// SETUP
 void buildTangram() {
-	std::map<std::string, WorldObject*> tangramObject = *tangram;
+	tangram_map_type tangramObject = *tangram;
 	WorldObject* aux;
 	MaterialManager *manager = MaterialManager::instance();
 	ColorMaterial *matAux = 0;
@@ -547,7 +565,7 @@ void buildTangram() {
 void loadModels() {
 	ModelLoader modelLoader;
 
-	tangram = new std::map<std::string, WorldObject*>();
+	tangram = new tangram_map_type();
 
 	WorldObject * aux;
 	std::string name;
@@ -620,6 +638,48 @@ void loadMaterials()
 	testSubjectMat = manager->get("Monkey.mtl");
 }
 
+void cameraSetup()
+{
+	tangram_map_type tangramObject = *tangram;
+
+	theta = (3 * (float)PI) / 2.0f;
+	phi = (float)PI / 4.0f;
+	raw = 10.0f;
+	cameraCenter = tangramObject["BackPlane"]->getPosition();
+	proj = glm::ortho(-4.f, 4.f, -4.f, 4.f, 0.f, 50.f);
+}
+
+void initTime()
+{
+	oldTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
+	time = 0.0f;
+}
+
+void setupSymmetrys()
+{
+	MySymmetryTree = new SymmetryTree(SymmetryTreeName);
+	
+	//X0mirror = new Mirror3D(X0mirrorName, glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f));
+	X0mirror = new Mirror3D(X0mirrorName, glm::vec2(0.0f, 0.0f), 90.0f);
+	//Y0mirror = new Mirror3D(Y0mirrorName, glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 0.0f));
+	Y0mirror = new Mirror3D(Y0mirrorName, glm::vec2(0.0f, 0.0f), 0.0f);
+
+	MySymmetryTree->addSymmetry(Y0mirror);
+	MySymmetryTree->addSymmetry(X0mirror, Y0mirror);
+
+	tangram_map_type &tangramObject = *tangram;
+	for (tangram_map_type::iterator it = tangramObject.begin();
+		it != tangramObject.end(); ++it)
+	{
+		MySymmetryTree->addWorldObject(it->second);
+	}
+}
+void cleanupSymmetrys()
+{
+	delete MySymmetryTree;
+	delete X0mirror; delete Y0mirror;
+}
+
 void setupCallbacks()
 {
 	glutCloseFunc(cleanup);
@@ -676,23 +736,6 @@ void setupGLUT(int argc, char* argv[])
 	}
 }
 
-void cameraSetup()
-{
-	std::map<std::string, WorldObject*> tangramObject = *tangram;
-
-	theta = (3 * (float)PI)/2.0f;
-	phi = (float)PI / 4.0f;
-	raw = 10.0f;
-	cameraCenter = tangramObject["BackPlane"]->getPosition();
-	proj = glm::ortho(-4.f, 4.f, -4.f, 4.f, 0.f, 50.f);
-}
-
-void initTime()
-{
-	oldTime = (float)glutGet(GLUT_ELAPSED_TIME) * 1E-03f;
-	time = 0.0f;
-}
-
 void init(int argc, char* argv[])
 {
 	setupGLUT(argc, argv);
@@ -704,6 +747,7 @@ void init(int argc, char* argv[])
 	loadModels();
 	loadMaterials();
 	buildTangram();
+	setupSymmetrys();
 	cameraSetup();
 	initTime();
 	//TODO remove
