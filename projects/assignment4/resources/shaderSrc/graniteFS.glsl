@@ -26,7 +26,8 @@ uniform sampler3D UTexture;
 
 float noise(in vec3 position) 
 {
-	float noiseAux = texture(UTexture, normalize(position) * 0.5 + 0.5).r;
+	//float noiseAux = texture(UTexture, normalize(position) * 0.5 + 0.5).r;
+	float noiseAux = texture(UTexture, position).r;
 	return noiseAux;
 }
 
@@ -86,7 +87,8 @@ void main(void)
 	
 	vec3 outColor = emition + ambient + (diffuse + specular) * attenuation;
 
-	fragColor = vec4(noise(exPosition) * outColor,1.0);
+	//fragColor = vec4(exPosition,1.0);
+	fragColor = vec4(noise(exPosition*0.125) * outColor,1.0);
 	
 
 }

@@ -15,7 +15,7 @@ BYTE* Texture::get3DPerlinNoise(int octaves, float freq, float amp, int seed, in
 				float z = -1.0f + step * k;
 				float noi = noise.Get(x, y, z);
 				int aux = (int)((noi + 1.0) * (256.0 / 2.0));
-				std::cout << (BYTE) aux << std::endl;
+				//std::cout << (BYTE) aux << std::endl;
 				image[i * s2 + j * size + k] = (BYTE)aux;
 			}
 		}

@@ -206,7 +206,7 @@ void createShaderProgram() {
 	granite->sendUniformFloat("LightRangeLimit", lampRange);
 	
 	Texture tex;
-	tex.create3DTexture(Texture::get3DPerlinNoise(4, 4, 1, 94, 16), 16);
+	tex.create3DTexture(Texture::get3DPerlinNoise(4, 4, 1, 94, 64), 64);
 	granite->sendUnifomInt("UTexture", 0);
 	
 	checkOpenGLError("Problem passing LightDirection.");
