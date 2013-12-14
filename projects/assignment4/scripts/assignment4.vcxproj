@@ -17,6 +17,7 @@
     <ClCompile Include="..\src\MatrixStack.cpp" />
     <ClCompile Include="..\src\Mirror.cpp" />
     <ClCompile Include="..\src\ModelLoader.cpp" />
+    <ClCompile Include="..\src\perlin.cpp" />
     <ClCompile Include="..\src\RenderModel.cpp" />
     <ClCompile Include="..\src\RenderModelManager.cpp" />
     <ClCompile Include="..\src\Shader.cpp" />
@@ -25,6 +26,7 @@
     <ClCompile Include="..\src\Symmetry.cpp" />
     <ClCompile Include="..\src\SymmetryExt.cpp" />
     <ClCompile Include="..\src\test\SymmetryExtTests.cpp" />
+    <ClCompile Include="..\src\Texture.cpp" />
     <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\WorldObject.cpp" />
     <ClCompile Include="..\src\WorldObjectManager.cpp" />
@@ -36,6 +38,7 @@
     <ClInclude Include="..\src\MatrixStack.h" />
     <ClInclude Include="..\src\Mirror.h" />
     <ClInclude Include="..\src\ModelLoader.h" />
+    <ClInclude Include="..\src\perlin.h" />
     <ClInclude Include="..\src\RenderModel.h" />
     <ClInclude Include="..\src\RenderModelManager.h" />
     <ClInclude Include="..\src\Shader.h" />
@@ -44,6 +47,7 @@
     <ClInclude Include="..\src\Symmetry.h" />
     <ClInclude Include="..\src\SymmetryExt.h" />
     <ClInclude Include="..\src\test\SymmetryExtTests.h" />
+    <ClInclude Include="..\src\Texture.h" />
     <ClInclude Include="..\src\WorldObject.h" />
     <ClInclude Include="..\src\utils.h" />
     <ClInclude Include="..\src\WorldObjectManager.h" />

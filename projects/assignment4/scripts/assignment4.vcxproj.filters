@@ -20,6 +20,8 @@
     <ClCompile Include="..\src\test\SymmetryExtTests.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\perlin.cpp" />
+    <ClCompile Include="..\src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -41,6 +43,8 @@
     <ClInclude Include="..\src\test\SymmetryExtTests.h">
       <Filter>Tests</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\perlin.h" />
+    <ClInclude Include="..\src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
