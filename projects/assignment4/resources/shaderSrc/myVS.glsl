@@ -5,7 +5,6 @@ in vec3 inNormal;
 in vec2 inTex;
 uniform vec3 MaterialDiffuse;
 out vec3 exColor;
-out vec3 exPosition;
 
 uniform mat4 ModelMatrix;
 layout(std140) uniform SharedMatrices {
@@ -29,7 +28,6 @@ void main(void) {
 	//exColor = MaterialDiffuse;
 	//exColor = N;
 	exColor = diffInten * MaterialDiffuse;
-	exPosition = inPosition;
 
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(inPosition,1.0f);
 }

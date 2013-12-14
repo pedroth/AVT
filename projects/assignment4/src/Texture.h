@@ -13,7 +13,7 @@ public:
 		create perlin noise texture
 		size - must be a power of two. size x size x size  is the size of returning array 
 	*/
-	static BYTE* get3DPerlinNoise(int size);
+	static BYTE* get3DPerlinNoise(int octaves, float freq, float amp, int seed, int size);
 	/*
 		size - is the width, height and depth of the image.
 	*/

@@ -91,7 +91,6 @@ void createShaderProgram() {
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
 	//myShader->addUniform("Color");
-	myShader->addUniform("UTexture");
 	myShader->addUniform("MaterialDiffuse");
 	myShader->addUniform("ModelMatrix");
 	myShader->addUniform("LightDirection");
@@ -103,9 +102,6 @@ void createShaderProgram() {
 
 	myShader->bind();
 	myShader->sendUniformVec3("LightDirection", lightDir);
-	Texture tex;
-	tex.create3DTexture(Texture::get3DPerlinNoise(16), 16);
-	myShader->sendUnifomInt("UTexture", 0);
 	checkOpenGLError("Problem passing LightDirection.");
 	myShader->unbind();
 
@@ -174,6 +170,48 @@ void createShaderProgram() {
 	phong->sendUniformFloat("LightRangeLimit", lampRange);
 	checkOpenGLError("Problem passing LightDirection.");
 	phong->unbind();
+	
+	/*granite shader*/
+	ShaderProgram * granite = new ShaderProgram();
+	granite->addShader(GL_VERTEX_SHADER, ShaderPath + "graniteVS.glsl");
+	granite->addShader(GL_FRAGMENT_SHADER, ShaderPath + "graniteFS.glsl");
+	granite->addAttrib("inPosition", RenderModel::POSITION);
+	granite->addAttrib("inNormal", RenderModel::NORMAL);
+	granite->addAttrib("inTex", RenderModel::TEX);
+	granite->addUniform("UTexture");
+	granite->addUniform("ModelMatrix");
+	granite->addUniform("LightDirection");
+	granite->addUniform("LightPosition");
+	granite->addUniform("LightAmbient");
+	granite->addUniform("LightDiffuse");
+	granite->addUniform("LightSpecular");
+	granite->addUniform("LightAttenuation");
+	granite->addUniform("LightRangeLimit");
+	granite->addUniform("MaterialEmit");
+	granite->addUniform("MaterialAmbient");
+	granite->addUniform("MaterialDiffuse");
+	granite->addUniform("MaterialSpecular");
+	granite->addUniform("MaterialShininess");
+	granite->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	granite->createCompileLink();
+	shaderManager->add("graniteShader", granite);
+
+	granite->bind();
+	granite->sendUniformVec3("LightDirection", lightDir);
+	granite->sendUniformVec3("LightPosition", lampPos);
+	granite->sendUniformVec3("LightAmbient", lampAmb);
+	granite->sendUniformVec3("LightDiffuse", lampDiff);
+	granite->sendUniformVec3("LightSpecular", lampSpec);
+	granite->sendUniformVec3("LightAttenuation", lampAtte);
+	granite->sendUniformFloat("LightRangeLimit", lampRange);
+	
+	Texture tex;
+	tex.create3DTexture(Texture::get3DPerlinNoise(4, 4, 1, 94, 16), 16);
+	granite->sendUnifomInt("UTexture", 0);
+	
+	checkOpenGLError("Problem passing LightDirection.");
+	granite->unbind();
+
 }
 
 void destroyShaderProgram() {
@@ -248,8 +286,9 @@ void drawScene() {
 	glm::mat4x4 view = orbit();
 	writeSharedMatrices(view, proj);
 
-	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
