@@ -144,8 +144,22 @@ SymmetryI::~SymmetryI()
 		it->second->setParent(_parent);
 	}
 }
+void SymmetryI::activate()
+{
+	_isActive = true;
+}
+void SymmetryI::deactivate()
+{
+	_isActive = false;
+}
+bool SymmetryI::isActive()
+{
+	return _isActive;
+}
 std::vector<TransformedWO> SymmetryI::getAllTransfWO()
 {
+	if (!_isActive)
+		return getOriginalTransfWO();
 	std::vector<TransformedWO> originals = getOriginalTransfWO();
 	std::vector<TransformedWO> ghosts = getGhostTransfWO();
 	std::vector<TransformedWO> all;
@@ -283,6 +297,14 @@ RealSymmetry::~RealSymmetry()
 std::vector<TransformedWO> RealSymmetry::getOriginalTransfWO()
 {
 	return _parent->getAllTransfWO();
+}
+void RealSymmetry::draw(ShaderProgram *program)
+{
+	if (!isActive())
+		return;
+	std::vector<TransformedWO> ghosts = getGhostTransfWO();
+	for (unsigned int i = 0; i < ghosts.size(); ++i)
+		ghosts[i].draw(program);
 }
 
 //////////////////////////////////////////////////////////

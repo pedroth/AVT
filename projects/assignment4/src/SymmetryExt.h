@@ -14,8 +14,12 @@
 struct TransformedWO;
 
 class SymmetryI {
+private:
 	//The symmetrys name.
 	std::string _name;
+private:
+	//Is this symmetry active.
+	bool _isActive;
 public:
 	typedef std::map<std::string, SymmetryI*> children_type;
 protected:
@@ -29,6 +33,13 @@ protected:
 protected:
 	virtual std::vector<TransformedWO> getOriginalTransfWO()=0;
 	virtual std::vector<TransformedWO> getGhostTransfWO() = 0;
+public:
+	//Sets this symmetry as an active symmetry.
+	void activate();
+	//Sets this symmetry as an inactive symmetry.
+	void deactivate();
+	//Returns if the symmetry is active.
+	bool isActive();
 public:
 	//Reassigns the parent of this' children to the parent of this.
 	virtual ~SymmetryI();
@@ -92,7 +103,7 @@ protected:
 public:
 	RealSymmetry(std::string name);
 	virtual ~RealSymmetry();
-	//virtual void draw(ShaderProgram *program)=0;
+	void draw(ShaderProgram *program);
 };
 
 struct TransformedWO {

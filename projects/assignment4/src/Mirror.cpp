@@ -41,20 +41,6 @@ glm::mat4 Mirror3D::computeTransform()
 
 	return transform;
 }
-void Mirror3D::draw(ShaderProgram *program)
-{
-	//glm::mat4 transform = computeTransform();
-	//ModelMatrixStack.push();
-	//ModelMatrixStack.multiplyMat(transform);
-	//OpenGLGlobalsManager::flipGLFrontFace();
-	//_parent->draw(program);
-	//ModelMatrixStack.pop();
-	//OpenGLGlobalsManager::flipGLFrontFace();
-
-	std::vector<TransformedWO> ghosts = getGhostTransfWO();
-	for (unsigned int i = 0; i < ghosts.size(); ++i)
-		ghosts[i].draw(program);
-}
 std::vector<TransformedWO> Mirror3D::getGhostTransfWO()
 {
 	glm::mat4 transform = computeTransform();
