@@ -126,6 +126,18 @@ void SymmetryTree::updateDeepestSymmetrys()
 			_deepesSymmetrys[current->name()] = current;
 	}
 }
+void SymmetryTree::activateSymmetry(RealSymmetry *symmetry)
+{
+	symm_map_type::iterator it = _symmetrys.find(symmetry->name());
+	if (it != _symmetrys.end())
+		it->second->activate();
+}
+void SymmetryTree::deactivateSymmetry(RealSymmetry *symmetry)
+{
+	symm_map_type::iterator it = _symmetrys.find(symmetry->name());
+	if (it != _symmetrys.end())
+		it->second->deactivate();
+}
 
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////

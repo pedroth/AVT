@@ -260,8 +260,25 @@ void drawScene() {
 	drawTestSubject();
 }
 
-void cleanupSymmetrys();
+void applySymmAxisToSymmetrys(int symmAxis)
+{
+	switch (symmAxis){
+	case 0:
+		MySymmetryTree->deactivateSymmetry(X0mirror);
+		MySymmetryTree->deactivateSymmetry(Y0mirror);
+		break;
+	case 1:
+		MySymmetryTree->deactivateSymmetry(Y0mirror);
+		MySymmetryTree->activateSymmetry(X0mirror);
+		break;
+	case 2:
+		MySymmetryTree->activateSymmetry(Y0mirror);
+		MySymmetryTree->activateSymmetry(X0mirror);
+		break;
+	}
+}
 
+void cleanupSymmetrys();
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void cleanup()
@@ -475,21 +492,21 @@ void keyboardKey(unsigned char key, int x, int y) {
 	if (key == 'a'){
 		symmetryAxis++;
 		symmetryAxis = symmetryAxis % 3;
-		world->setSymmetryAxis(symmetryAxis);
+		//world->setSymmetryAxis(symmetryAxis);
+		applySymmAxisToSymmetrys(symmetryAxis);
 	}
-	if (key == 'q'){
-		static bool activate = true;
-		activate = !activate;
-		if (activate)
-			X0mirror->activate();
-		else
-			X0mirror->deactivate();
-	}
+	//if (key == 'q'){
+	//	static int symmAxis = 0;
+	//	symmAxis = (symmAxis + 1) % 3;
+	//	applySymmAxisToSymmetrys(symmAxis);
+	//}
 	if (key == 's'){
 		world->save(symmetryAxis);
 	}
 	if (key == 'l'){
 		world->load(&symmetryAxis);
+		applySymmAxisToSymmetrys(symmetryAxis);
+		world->setSymmetryAxis(0);//temporary workaround
 	}
 	if (key == 'p'){
 		BYTE* imageData = new BYTE[WinX * WinY * 3];
@@ -681,6 +698,8 @@ void setupSymmetrys()
 	{
 		MySymmetryTree->addWorldObject(it->second);
 	}
+
+	applySymmAxisToSymmetrys(0);
 }
 void cleanupSymmetrys()
 {
