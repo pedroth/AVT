@@ -59,6 +59,7 @@ public:
 	void sendUniformVec3(const std::string &uniformName, const glm::vec3 &vec);
 	void sendUniformFloat(const std::string &uniformName, const float &f);
 	void sendUniformMat3(const std::string &uniformName, const glm::mat3 &mat);
+	void sendUnifomInt(const std::string &uniformName, const int &i);
 private:
 	void displayShaderCompileLog(const std::string &message, const Shader &shader);
 	void displayProgramLinkingLog(const std::string &message);

@@ -10,6 +10,8 @@
 
 #include "WorldObjectManager.h"
 
+#include "Texture.h"
+
 #define CAPTION "Hello New World"
 #define PI 3.14159265359
 
@@ -78,6 +80,7 @@ void createShaderProgram() {
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
 	//myShader->addUniform("Color");
+	myShader->addUniform("UTexture");
 	myShader->addUniform("MaterialDiffuse");
 	myShader->addUniform("ModelMatrix");
 	myShader->addUniform("LightDirection");
@@ -89,6 +92,9 @@ void createShaderProgram() {
 
 	myShader->bind();
 	myShader->sendUniformVec3("LightDirection", lightDir);
+	Texture tex;
+	tex.create3DTexture(Texture::get3DPerlinNoise(16), 16);
+	myShader->sendUnifomInt("UTexture", 0);
 	checkOpenGLError("Problem passing LightDirection.");
 	myShader->unbind();
 
@@ -231,8 +237,8 @@ void drawScene() {
 	glm::mat4x4 view = orbit();
 	writeSharedMatrices(view, proj);
 
-	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
-	ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));

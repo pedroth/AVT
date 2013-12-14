@@ -204,6 +204,11 @@ void ShaderProgram::sendUniformFloat(const std::string &uniformName, const float
 	glUniform1f(uniformId, f);
 }
 
+void ShaderProgram::sendUnifomInt(const std::string &uniformName, const int &i) {
+	GLint uniformId = m_uniforms[uniformName].id;
+	glUniform1i(uniformId, i);
+}
+
 
 // Returns this program's OpenGL name.
 GLuint ShaderProgram::programName()
