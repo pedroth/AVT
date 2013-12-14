@@ -1,10 +1,10 @@
 #include "Texture.h"
 #include <iostream>
 
-BYTE* Texture::get3DPerlinNoise(int size) {
+BYTE* Texture::get3DPerlinNoise(int octaves, float freq, float amp, int seed, int size) {
 	int n = size * size * size;
 	int s2 = size * size;
-	Perlin noise(4, 4, 1, 94);
+	Perlin noise(octaves,freq,amp,seed);
 	BYTE* image = new BYTE[n];
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
