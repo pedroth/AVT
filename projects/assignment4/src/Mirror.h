@@ -19,6 +19,4 @@ public:
 	//Create a Mirror symmetry with a plane orthogonal to z=0
 	//that contains p1 and that angles from x=0 degrees.
 	Mirror3D(std::string name, glm::vec2 p1, float degrees);
-	//Draw the mirrored part of the Symmetry.
-	void draw(ShaderProgram *program);
 };

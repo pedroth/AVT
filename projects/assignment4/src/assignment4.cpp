@@ -477,6 +477,14 @@ void keyboardKey(unsigned char key, int x, int y) {
 		symmetryAxis = symmetryAxis % 3;
 		world->setSymmetryAxis(symmetryAxis);
 	}
+	if (key == 'q'){
+		static bool activate = true;
+		activate = !activate;
+		if (activate)
+			X0mirror->activate();
+		else
+			X0mirror->deactivate();
+	}
 	if (key == 's'){
 		world->save(symmetryAxis);
 	}
