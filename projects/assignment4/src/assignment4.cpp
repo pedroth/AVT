@@ -206,11 +206,51 @@ void createShaderProgram() {
 	granite->sendUniformFloat("LightRangeLimit", lampRange);
 	
 	Texture tex;
-	tex.create3DTexture(Texture::get3DPerlinNoise(4, 4, 1, 94, 16), 16);
+	tex.create3DTexture(Texture::get3DPerlinNoise(8, 4, 1, 68, 64), 64);
 	granite->sendUnifomInt("UTexture", 0);
 	
 	checkOpenGLError("Problem passing LightDirection.");
 	granite->unbind();
+
+	/*marble shader*/
+	ShaderProgram * marble = new ShaderProgram();
+	marble->addShader(GL_VERTEX_SHADER, ShaderPath + "marbleVS.glsl");
+	marble->addShader(GL_FRAGMENT_SHADER, ShaderPath + "marbleFS.glsl");
+	marble->addAttrib("inPosition", RenderModel::POSITION);
+	marble->addAttrib("inNormal", RenderModel::NORMAL);
+	marble->addAttrib("inTex", RenderModel::TEX);
+	marble->addUniform("UTexture");
+	marble->addUniform("ModelMatrix");
+	marble->addUniform("LightDirection");
+	marble->addUniform("LightPosition");
+	marble->addUniform("LightAmbient");
+	marble->addUniform("LightDiffuse");
+	marble->addUniform("LightSpecular");
+	marble->addUniform("LightAttenuation");
+	marble->addUniform("LightRangeLimit");
+	marble->addUniform("MaterialEmit");
+	marble->addUniform("MaterialAmbient");
+	marble->addUniform("MaterialDiffuse");
+	marble->addUniform("MaterialSpecular");
+	marble->addUniform("MaterialShininess");
+	marble->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	marble->createCompileLink();
+	shaderManager->add("marbleShader", marble);
+
+	marble->bind();
+	marble->sendUniformVec3("LightDirection", lightDir);
+	marble->sendUniformVec3("LightPosition", lampPos);
+	marble->sendUniformVec3("LightAmbient", lampAmb);
+	marble->sendUniformVec3("LightDiffuse", lampDiff);
+	marble->sendUniformVec3("LightSpecular", lampSpec);
+	marble->sendUniformVec3("LightAttenuation", lampAtte);
+	marble->sendUniformFloat("LightRangeLimit", lampRange);
+
+	tex.create3DTexture(Texture::get3DPerlinNoise(8, 8, 1, 92, 64), 64);
+	marble->sendUnifomInt("UTexture", 0);
+
+	checkOpenGLError("Problem passing LightDirection.");
+	marble->unbind();
 
 }
 
@@ -271,7 +311,7 @@ ColorMaterial *testSubjectMat = 0;
 void drawTestSubject()
 {
 	//TODO remove
-	ShaderProgram* phong = ShaderManager::getInstance()->get("PhongShader");
+	ShaderProgram* phong = ShaderManager::getInstance()->get("marbleShader");
 	phong->bind();
 	testSubjectMat->sendToShader(phong);
 	phong->sendUniformMat4("ModelMatrix", testSubjectMM);
@@ -288,7 +328,8 @@ void drawScene() {
 
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
-	ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
