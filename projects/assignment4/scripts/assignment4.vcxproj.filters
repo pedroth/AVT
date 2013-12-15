@@ -72,5 +72,11 @@
     <None Include="..\resources\shaderSrc\myPhongVS.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\resources\shaderSrc\graniteFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\graniteVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

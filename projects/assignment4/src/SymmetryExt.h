@@ -143,6 +143,11 @@ public:
 	//Returns the symmetry with the given name in this Tree if it exists.
 	RealSymmetry *getSymmetry(std::string symmName);
 
+	//Activate a symmetry from this symmetryTree if it is from this tree.
+	void activateSymmetry(RealSymmetry *symmetry);
+	//Deactivate a symmetry from this symmetryTree if it is from this tree.
+	void deactivateSymmetry(RealSymmetry *symmetry);
+
 	//Adds a WorldObject to the container.
 	void addWorldObject(WorldObject *object);
 	//Removes a WorldObject from the container if it is there.
