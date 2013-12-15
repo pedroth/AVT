@@ -443,7 +443,14 @@ void mouseMotion(int x, int y)  {
 		selectdObj->translate(glm::vec3(x, y, 0));
 	}
 	else if (selected && rotateState){
-		float aux = (float)fmod(dx, 2);
+		static glm::vec2 delta(0.0f);
+		delta += glm::vec2(dx, dy);
+		//float aux = (float)fmod(dx, 2);
+		float aux = -1.0f;
+		if (fabs(delta.x) > 3.0f){
+			aux = 0.0f;
+			delta = glm::vec2(0.0f, 0.0f);
+		}
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
 		if (dx < 0 && aux == 0){
 			selectdObj->rotate(glm::quat(cosf((-(float)PI / 8.0f) / 2.0f), 0.0f, 0.0f, sinf((-(float)PI / 8.0f) / 2.0f)));
