@@ -26,8 +26,7 @@ uniform sampler3D UTexture;
 
 float noise(in vec3 position) 
 {
-	float noiseAux = texture(UTexture, normalize(position)).r;
-	
+	float noiseAux = texture(UTexture, normalize(position)*0.5 + 0.5).r;
 	return noiseAux;
 }
 
@@ -69,6 +68,12 @@ float computeAttenuation(in float lightDistance)
 	return distanceFactor;
 }
 
+float sinozoid(vec3 pos) {
+	vec3 npos = normalize(pos);
+	float ret = (sin(32 * noise(pos) *(npos.x + npos.y)));
+	return ret;
+}
+
 void main(void)
 {
 	vec3 eyeDistance = vec3(0.0) - exViewPosition;
@@ -77,7 +82,7 @@ void main(void)
 	vec3 lightDistance = viewLightPos.xyz - exViewPosition;
 	float lightDistanceLength = length(lightDistance);
 	vec3 lightDir = normalize(lightDistance);
-	vec3 normal = normalize(noise(vec3(exPosition.x,exPosition.y,exPosition.z)) + exViewNormal);
+	vec3 normal = normalize(exViewNormal);
 	
 	vec3 emition = MaterialEmit;
 	vec3 ambient = computeAmbient();
@@ -87,8 +92,7 @@ void main(void)
 	
 	vec3 outColor = emition + ambient + (diffuse + specular) * attenuation;
 
-	//fragColor = vec4(exPosition,1.0);
-	fragColor = vec4(noise(exPosition*0.125) * outColor,1.0);
+	fragColor = vec4(sinozoid(exPosition) * outColor,1.0);
 	
 
 }

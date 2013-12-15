@@ -15,7 +15,7 @@ BYTE* Texture::get3DPerlinNoise(int octaves, float freq, float amp, int seed, in
 				float z = -1.0f + step * k;
 				float noi = noise.Get(x, y, z);
 				int aux = (int)((noi + 1.0) * (256.0 / 2.0));
-				//std::cout << (BYTE) aux << std::endl;
+				//std::cout << aux << std::endl;
 				image[i * s2 + j * size + k] = (BYTE)aux;
 			}
 		}
@@ -32,6 +32,6 @@ void Texture::create3DTexture(const BYTE* image, int size) {
 	// Setting the texture parameters.
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 }
