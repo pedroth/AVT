@@ -53,6 +53,8 @@
   <ItemGroup>
     <None Include="..\resources\shaderSrc\graniteFS.glsl" />
     <None Include="..\resources\shaderSrc\graniteVS.glsl" />
+    <None Include="..\resources\shaderSrc\marbleFS.glsl" />
+    <None Include="..\resources\shaderSrc\marbleVS.glsl" />
     <None Include="..\resources\shaderSrc\myFS.glsl" />
     <None Include="..\resources\shaderSrc\myPhongFS.glsl" />
     <None Include="..\resources\shaderSrc\myPhongVS.glsl" />
