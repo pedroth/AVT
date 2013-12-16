@@ -90,6 +90,7 @@ void createShaderProgram() {
 	myShader->addAttrib("inPosition", RenderModel::POSITION);
 	myShader->addAttrib("inNormal", RenderModel::NORMAL);
 	myShader->addAttrib("inTex", RenderModel::TEX);
+	myShader->addAttrib("inTangent", RenderModel::TANGENT);
 	//myShader->addUniform("Color");
 	myShader->addUniform("MaterialDiffuse");
 	myShader->addUniform("ModelMatrix");

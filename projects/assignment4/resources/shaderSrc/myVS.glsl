@@ -3,6 +3,7 @@
 in vec3 inPosition;
 in vec3 inNormal;
 in vec2 inTex;
+in vec3 inTangent;
 uniform vec3 MaterialDiffuse;
 out vec3 exColor;
 
@@ -27,6 +28,11 @@ void main(void) {
 	//exColor = LightDirection;
 	//exColor = MaterialDiffuse;
 	//exColor = N;
+	//exColor = inNormal;
+	//exColor = inTangent;
+	//exColor = vec3(dot(inNormal,inTangent));
+	//exColor = vec3(length(inNormal));
+	//exColor = vec3(length(inTangent));
 	exColor = diffInten * MaterialDiffuse;
 
 	gl_Position = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(inPosition,1.0f);

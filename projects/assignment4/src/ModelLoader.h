@@ -7,10 +7,12 @@ class ModelLoader {
 	struct Index {
 		unsigned int v, vn, vt;
 	};
-	std::vector<Vertex> m_vertices, m_vertexData;
-	std::vector<Normal> m_normals, m_normalData;
-	std::vector<TexCoord> m_texCoords, m_texCoordData;
+	std::vector<glm::vec3> m_vertices, m_vertexData;
+	std::vector<glm::vec3> m_normals, m_normalData;
+	std::vector<glm::vec2> m_texCoords, m_texCoordData;
 	std::vector<Index> m_indexes;
+
+	std::vector<RenderModel::Triangle> m_triangles;
 	
 	RenderModel *m_loadedModel;
 private:
