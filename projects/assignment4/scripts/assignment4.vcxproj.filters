@@ -78,5 +78,11 @@
     <None Include="..\resources\shaderSrc\graniteVS.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\resources\shaderSrc\marbleFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\marbleVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
