@@ -70,9 +70,20 @@ float computeAttenuation(in float lightDistance)
 
 float sinozoid(vec3 pos) {
 	vec3 npos = normalize(pos);
-	float ret = (sin(32 * noise(pos) *(npos.x + npos.y)));
+	float ret = 0.5 * abs(sin(32 * noise(pos) + (npos.x + npos.y))) + 0.25 * abs(sin(8 * noise(pos) + (npos.x + npos.y))) + 0.25 * abs(sin(16 * noise(pos) + (npos.x + npos.y)));
 	return ret;
 }
+
+vec3 gradientNoise(in vec3 pos) {
+	float h = 1E-01;
+	float inH = 1 /  (2 * h);
+	pos = normalize(pos * 0.5 + 0.5);
+	float dx = (sinozoid(pos + vec3(h,0.0f,0.0f)) - sinozoid(pos - vec3(h,0.0f,0.0f))) * inH;
+	float dy = (sinozoid(pos + vec3(0.0f,h,0.0f)) - sinozoid(pos - vec3(0.0f,h,0.0f))) * inH;
+	float dz = (sinozoid(pos + vec3(0.0f,0.0f,h)) - sinozoid(pos - vec3(0.0f,0.0f,h))) * inH;
+	return normalize(vec3(dx,dy,dz));
+}
+
 
 void main(void)
 {
@@ -92,7 +103,7 @@ void main(void)
 	
 	vec3 outColor = emition + ambient + (diffuse + specular) * attenuation;
 
-	fragColor = vec4(sinozoid(exPosition) * outColor,1.0);
+	fragColor = vec4((sinozoid(exPosition) * outColor),1.0);
 	
 
 }
