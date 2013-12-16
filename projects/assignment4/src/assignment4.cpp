@@ -206,7 +206,7 @@ void createShaderProgram() {
 	granite->sendUniformFloat("LightRangeLimit", lampRange);
 	
 	Texture tex;
-	tex.create3DTexture(Texture::get3DPerlinNoise(8, 4, 1, 68, 64), 64);
+	tex.create3DTexture(Texture::get3DPerlinNoise(8, 8, 1, 68, 64), 64);
 	granite->sendUnifomInt("UTexture", 0);
 	
 	checkOpenGLError("Problem passing LightDirection.");
@@ -246,7 +246,7 @@ void createShaderProgram() {
 	marble->sendUniformVec3("LightAttenuation", lampAtte);
 	marble->sendUniformFloat("LightRangeLimit", lampRange);
 
-	tex.create3DTexture(Texture::get3DPerlinNoise(8, 8, 1, 92, 64), 64);
+	tex.create3DTexture(Texture::get3DPerlinNoise(8, 16, 1, 92, 64), 64);
 	marble->sendUnifomInt("UTexture", 0);
 
 	checkOpenGLError("Problem passing LightDirection.");
@@ -311,7 +311,7 @@ ColorMaterial *testSubjectMat = 0;
 void drawTestSubject()
 {
 	//TODO remove
-	ShaderProgram* phong = ShaderManager::getInstance()->get("marbleShader");
+	ShaderProgram* phong = ShaderManager::getInstance()->get("graniteShader");
 	phong->bind();
 	testSubjectMat->sendToShader(phong);
 	phong->sendUniformMat4("ModelMatrix", testSubjectMM);
@@ -328,8 +328,8 @@ void drawScene() {
 
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
-	//ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
-	ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
@@ -407,21 +407,6 @@ void mouseWheel(int button, int dir, int x, int y)
 	proj = glm::scale(proj, glm::vec3(factor));
 }
 
-/* need a pen to explain */
-glm::vec3 pickMouse(int x, int y) {
-	float yclip = ((y * (-2.0f)) / (WinY)) + 1;
-	float xclip = ((x * 2.0f) / WinX) - 1;
-
-	glm::mat4x4 view = orbit();
-
-	glm::mat4 M = proj * view;
-	
-	glm::vec4 lambda(xclip, yclip, 0.0f,1.0f);
-	lambda = glm::inverse(M) * lambda;
-
-	return glm::vec3(lambda[0], lambda[1], 0);
-}
-
 void mouseMotion(int x, int y)  {
 	WorldObject *selectdObj;
 
@@ -430,8 +415,6 @@ void mouseMotion(int x, int y)  {
 	float dx = (float)(newMx - mx);
 	float dy = (float)(newMy - my);
 
-
-	glm::vec3 lambda = pickMouse(x, y);
 
 	//move camera
 	if (moveCamara){
