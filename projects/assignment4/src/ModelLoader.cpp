@@ -45,21 +45,21 @@ void ModelLoader::parseLine(const std::string &line) {
 
 void ModelLoader::parseVertex(std::istringstream &stream)
 {
-	Vertex v;
+	glm::vec3 v;
 	stream >> v.x >> v.y >> v.z;
 	m_vertices.push_back(v);
 }
 
 void ModelLoader::parseNormal(std::istringstream &stream)
 {
-	Normal n;
+	glm::vec3 n;
 	stream >> n.x >> n.y >> n.z;
 	m_normals.push_back(n);
 }
 
 void ModelLoader::parseTexCoord(std::istringstream &stream)
 {
-	TexCoord vt;
+	glm::vec2 vt;
 	stream >> vt.s >> vt.t;
 	m_texCoords.push_back(vt);
 }
@@ -104,11 +104,24 @@ void ModelLoader::prepareModelData()
 		m_normalData.push_back(m_normals[ind.vn - 1]);
 		m_texCoordData.push_back(m_texCoords[ind.vt - 1]);
 	}
+
+	unsigned int currIndex = 0;
+	for (unsigned int i = 0; i < m_indexes.size() / 3; ++i)
+	{
+		RenderModel::Triangle tri;
+		tri.vertIndex[0] = currIndex;
+		tri.vertIndex[1] = currIndex+1;
+		tri.vertIndex[2] = currIndex+2;
+
+		m_triangles.push_back(tri);
+
+		currIndex += 3;
+	}
 }
 
 void ModelLoader::createRenderModel(std::string modelName)
 {
-	m_loadedModel = new RenderModel(modelName, m_vertexData, m_normalData, m_texCoordData);
+	m_loadedModel = new RenderModel(modelName, m_triangles, m_vertexData, m_normalData, m_texCoordData);
 }
 
 void ModelLoader::cleanup()
@@ -120,4 +133,5 @@ void ModelLoader::cleanup()
 	m_texCoords.clear();
 	m_texCoordData.clear();
 	m_indexes.clear();
+	m_triangles.clear();
 }
