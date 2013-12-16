@@ -328,8 +328,8 @@ void drawScene() {
 
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
-	ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
-	//ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));

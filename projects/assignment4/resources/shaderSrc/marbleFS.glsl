@@ -93,7 +93,7 @@ void main(void)
 	vec3 lightDistance = viewLightPos.xyz - exViewPosition;
 	float lightDistanceLength = length(lightDistance);
 	vec3 lightDir = normalize(lightDistance);
-	vec3 normal = normalize(exViewNormal);
+	vec3 normal = normalize(gradientNoise(exPosition) + exViewNormal);
 	
 	vec3 emition = MaterialEmit;
 	vec3 ambient = computeAmbient();
@@ -103,7 +103,7 @@ void main(void)
 	
 	vec3 outColor = emition + ambient + (diffuse + specular) * attenuation;
 
-	fragColor = vec4((sinozoid(exPosition) * outColor),1.0);
+	fragColor = vec4((outColor),1.0);
 	
 
 }
