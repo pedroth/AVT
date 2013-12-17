@@ -60,6 +60,11 @@ typedef std::map<std::string, WorldObject*> tangram_map_type;
 /* map of tangram objects */
 tangram_map_type * tangram;
 
+/* isGranite */
+bool isGranite;
+/* isMarble */
+bool isMarble;
+
 bool selected = false;
 bool rotateState = false;
 bool moveCamara = false;
@@ -312,7 +317,7 @@ ColorMaterial *testSubjectMat = 0;
 void drawTestSubject()
 {
 	//TODO remove
-	ShaderProgram* phong = ShaderManager::getInstance()->get("graniteShader");
+	ShaderProgram* phong = ShaderManager::getInstance()->get("marbleShader");
 	phong->bind();
 	testSubjectMat->sendToShader(phong);
 	phong->sendUniformMat4("ModelMatrix", testSubjectMM);
@@ -328,9 +333,14 @@ void drawScene() {
 	writeSharedMatrices(view, proj);
 
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
-	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
-	//ShaderProgram* shader = ShaderManager::getInstance()->get("graniteShader");
-	ShaderProgram* shader = ShaderManager::getInstance()->get("marbleShader");
+	
+	ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
+	
+	if (isGranite)
+		shader = ShaderManager::getInstance()->get("graniteShader");
+	if(isMarble)
+		shader = ShaderManager::getInstance()->get("marbleShader");
+
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
@@ -593,6 +603,14 @@ void keyboardKey(unsigned char key, int x, int y) {
 
 		std::cout << "Snapshot saved" << std::endl;
 	}
+	if (key == 'm') {
+		isMarble = !isMarble;
+		isGranite = false;
+	}
+	if (key == 'g') {
+		isGranite = !isGranite;
+		isMarble = false;
+	}
 
 }
 
@@ -654,6 +672,9 @@ void buildTangram() {
 	matAux = manager->get("BackPlane.mtl");
 	aux->setColor(*matAux);
 	aux->setPosition(glm::vec3(-4.0f, 4.0f, 0.0f));
+	
+	isMarble = false;
+	isGranite = false;
 }
 
 

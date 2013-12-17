@@ -88,7 +88,7 @@ void main(void)
 	vec3 lightDistance = viewLightPos.xyz - exViewPosition;
 	float lightDistanceLength = length(lightDistance);
 	vec3 lightDir = normalize(lightDistance);
-	vec3 normal = normalize(gradientNoise(exPosition) + exViewNormal);
+	vec3 normal = normalize(exViewNormal);
 	
 	vec3 emition = MaterialEmit;
 	vec3 ambient = computeAmbient();
