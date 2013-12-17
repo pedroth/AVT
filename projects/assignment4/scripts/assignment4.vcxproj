@@ -109,13 +109,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\dependencies\glew\include\;$(SolutionDir)\..\dependencies\FreeImage\Dist\;$(SolutionDir)\..\dependencies\freeglut\include\;$(SolutionDir)\..\dependencies\glm\glm\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\dependencies\glew\include\;$(SolutionDir)\..\dependencies\FreeImage\Dist\;$(SolutionDir)\..\dependencies\FreeImage\Wrapper\FreeImagePlus\dist;$(SolutionDir)\..\dependencies\freeglut\include\;$(SolutionDir)\..\dependencies\glm\glm\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\..\dependencies\glew\lib\Release\Win32\;$(SolutionDir)\..\dependencies\FreeImage\Dist\;$(SolutionDir)\..\dependencies\freeglut\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\dependencies\glew\lib\Release\Win32\;$(SolutionDir)\..\dependencies\FreeImage\Dist\;$(SolutionDir)\..\dependencies\FreeImage\Wrapper\FreeImagePlus\dist;$(SolutionDir)\..\dependencies\freeglut\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;FreeImage.lib;FreeImagePlus.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
