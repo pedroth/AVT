@@ -20,7 +20,15 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\src\perlin.cpp" />
-    <ClCompile Include="..\src\Texture.cpp" />
+    <ClCompile Include="..\src\Texture.cpp">
+      <Filter>Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Texture2D.cpp">
+      <Filter>Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\TextureInfo.cpp">
+      <Filter>Texturing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\engine.h" />
@@ -42,7 +50,15 @@
       <Filter>Tests</Filter>
     </ClInclude>
     <ClInclude Include="..\src\perlin.h" />
-    <ClInclude Include="..\src\Texture.h" />
+    <ClInclude Include="..\src\Texture.h">
+      <Filter>Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Texture2D.h">
+      <Filter>Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TextureInfo.h">
+      <Filter>Texturing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Shaders">
@@ -51,6 +67,9 @@
     </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{d2b666b8-8e1e-4b23-88de-8d2666a6fed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Texturing">
+      <UniqueIdentifier>{9ddc5461-6978-4e51-9438-b6d093714132}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +101,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\resources\shaderSrc\marbleVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongRefFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongRefVS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongNormalsFS.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\resources\shaderSrc\myPhongNormalsVS.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

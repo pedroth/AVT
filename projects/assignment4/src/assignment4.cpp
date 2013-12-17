@@ -21,11 +21,15 @@ const std::string ResourcesPath = "../resources/";
 const std::string ShaderDir = "shaderSrc/";
 const std::string ModelDir = "models/";
 const std::string MaterialDir = "materials/";
+const std::string TextureDir = "textures/";
 const std::string ShaderPath = ResourcesPath + ShaderDir;
 const std::string ModelPath = ResourcesPath + ModelDir;
 const std::string MaterialPath = ResourcesPath + MaterialDir;
+const std::string TexturePath = ResourcesPath + TextureDir;
 
 const std::string MaterialListFile = "materials.txt";
+
+const std::string TestNormalsFile = "metal_floor_normal.jpg";
 
 
 const std::string SymmetryTreeName = "MySymmetryTree";
@@ -77,6 +81,8 @@ int symmetryAxis = 0;
 WorldObjectManager *world = new WorldObjectManager();
 SymmetryTree *MySymmetryTree;
 Mirror3D *X0mirror, *Y0mirror;
+
+Texture2D *TestNormals;
 
 /////////////////////////////////////////////////////////////////////// SHADERs
 void createSharedUniformBlocks() {
@@ -135,8 +141,8 @@ void createShaderProgram() {
 	selectShader->unbind();
 
 	ShaderProgram * phong = new ShaderProgram();
-	phong->addShader(GL_VERTEX_SHADER, ShaderPath + "myPhongVS.glsl");
-	phong->addShader(GL_FRAGMENT_SHADER, ShaderPath + "myPhongFS.glsl");
+	phong->addShader(GL_VERTEX_SHADER, ShaderPath + "myPhongRefVS.glsl");
+	phong->addShader(GL_FRAGMENT_SHADER, ShaderPath + "myPhongRefFS.glsl");
 	phong->addAttrib("inPosition", RenderModel::POSITION);
 	phong->addAttrib("inNormal", RenderModel::NORMAL);
 	phong->addAttrib("inTex", RenderModel::TEX);
@@ -258,6 +264,45 @@ void createShaderProgram() {
 	checkOpenGLError("Problem passing LightDirection.");
 	marble->unbind();
 
+
+	ShaderProgram * normals = new ShaderProgram();
+	normals->addShader(GL_VERTEX_SHADER, ShaderPath + "myPhongNormalsVS.glsl");
+	normals->addShader(GL_FRAGMENT_SHADER, ShaderPath + "myPhongNormalsFS.glsl");
+	normals->addAttrib("inPosition", RenderModel::POSITION);
+	normals->addAttrib("inNormal", RenderModel::NORMAL);
+	normals->addAttrib("inTex", RenderModel::TEX);
+	normals->addAttrib("inTangent", RenderModel::TANGENT);
+	normals->addUniform("ModelMatrix");
+	normals->addUniform("LightDirection");
+	normals->addUniform("LightPosition");
+	normals->addUniform("LightAmbient");
+	normals->addUniform("LightDiffuse");
+	normals->addUniform("LightSpecular");
+	normals->addUniform("LightAttenuation");
+	normals->addUniform("LightRangeLimit");
+	normals->addUniform("MaterialEmit");
+	normals->addUniform("MaterialAmbient");
+	normals->addUniform("MaterialDiffuse");
+	normals->addUniform("MaterialSpecular");
+	normals->addUniform("MaterialShininess");
+	normals->addUniformBlock("SharedMatrices", BINDPOINT, sharedMatricesBufferObject);
+	normals->addUniform("NormalTex");
+	normals->createCompileLink();
+	shaderManager->add("PhongNormalsShader", normals);
+
+	TextureInfo normalInfo(TestNormals, "NormalTex", 1);
+
+	normals->bind();
+	normalInfo.setInShaderProgram(normals);
+	normals->sendUniformVec3("LightDirection", lightDir);
+	normals->sendUniformVec3("LightPosition", lampPos);
+	normals->sendUniformVec3("LightAmbient", lampAmb);
+	normals->sendUniformVec3("LightDiffuse", lampDiff);
+	normals->sendUniformVec3("LightSpecular", lampSpec);
+	normals->sendUniformVec3("LightAttenuation", lampAtte);
+	normals->sendUniformFloat("LightRangeLimit", lampRange);
+	checkOpenGLError("Problem passing LightDirection.");
+	normals->unbind();
 }
 
 void destroyShaderProgram() {
@@ -333,8 +378,8 @@ void drawScene() {
 	writeSharedMatrices(view, proj);
 
 	//ShaderProgram* shader = ShaderManager::getInstance()->get("SimpleShader");
-	
-	ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
+	//ShaderProgram* shader = ShaderManager::getInstance()->get("PhongShader");
+	ShaderProgram* shader = ShaderManager::getInstance()->get("PhongNormalsShader");
 	
 	if (isGranite)
 		shader = ShaderManager::getInstance()->get("graniteShader");
@@ -370,10 +415,12 @@ void applySymmAxisToSymmetrys(int symmAxis)
 }
 
 void cleanupSymmetrys();
+void cleanupTextures();
 /////////////////////////////////////////////////////////////////////// CALLBACKS
 
 void cleanup()
 {
+	cleanupTextures();
 	destroyShaderProgram();
 	destroyBufferObjects();
 	cleanupSymmetrys();
@@ -415,7 +462,7 @@ void timer(int value)
 void mouseWheel(int button, int dir, int x, int y)
 {
 	float factor = 1.0f - 0.09f * -dir;
-	proj = glm::scale(proj, glm::vec3(factor));
+	proj = glm::scale(proj, glm::vec3(factor,factor,1.0f));
 }
 
 void mouseMotion(int x, int y)  {
@@ -755,6 +802,17 @@ void loadMaterials()
 	testSubjectMat = manager->get("Monkey.mtl");
 }
 
+void createTextures()
+{
+	TestNormals = new Texture2D();
+	bool res = TestNormals->loadTextureRGB(TexturePath + TestNormalsFile);
+}
+void cleanupTextures()
+{
+	delete TestNormals;
+	TestNormals = 0;
+}
+
 void cameraSetup()
 {
 	tangram_map_type tangramObject = *tangram;
@@ -860,6 +918,8 @@ void init(int argc, char* argv[])
 	setupGLUT(argc, argv);
 	setupGLEW();
 	setupOpenGL();
+
+	createTextures();
 	createShaderProgram();
 	createBufferObjects();
 	setupCallbacks();
