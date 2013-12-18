@@ -22,24 +22,12 @@ in vec3 exViewNormal;
 in vec3 exPosition;
 out vec4 fragColor;
 
-
 uniform sampler3D UTexture;
 
 float noise(in vec3 position) 
 {
-	float noiseAux = texture(UTexture, normalize(position * 0.5 + 0.5)).r;
-	
+	float noiseAux = texture(UTexture, position).r;
 	return noiseAux;
-}
-
-vec3 gradientNoise(in vec3 pos) {
-	float h = 1E-01;
-	float inH = 1 /  (2 * h);
-	pos = normalize(pos * 0.5 + 0.5);
-	float dx = (noise(pos + vec3(h,0.0f,0.0f)) - noise(pos - vec3(h,0.0f,0.0f))) * inH;
-	float dy = (noise(pos + vec3(0.0f,h,0.0f)) - noise(pos - vec3(0.0f,h,0.0f))) * inH;
-	float dz = (noise(pos + vec3(0.0f,0.0f,h)) - noise(pos - vec3(0.0f,0.0f,h))) * inH;
-	return normalize(vec3(dx,dy,dz));
 }
 
 vec3 computeAmbient()
@@ -80,6 +68,22 @@ float computeAttenuation(in float lightDistance)
 	return distanceFactor;
 }
 
+float sinozoid(vec3 pos) {
+	vec3 npos = normalize(pos);
+	float ret = (1 + sin(50 * (pos.x + noise(vec3(pos.x,pos.y,pos.z))/2))) / 2;
+	return ret;
+}
+
+vec3 gradientNoise(in vec3 pos) {
+	float h = 1E-01;
+	float inH = 1 /  (2 * h);
+	float dx = (noise(pos + vec3(h,0.0f,0.0f)) - noise(pos - vec3(h,0.0f,0.0f))) * inH;
+	float dy = (noise(pos + vec3(0.0f,h,0.0f)) - noise(pos - vec3(0.0f,h,0.0f))) * inH;
+	float dz = (noise(pos + vec3(0.0f,0.0f,h)) - noise(pos - vec3(0.0f,0.0f,h))) * inH;
+	return normalize(vec3(dx,dy,dz));
+}
+
+
 void main(void)
 {
 	vec3 eyeDistance = vec3(0.0) - exViewPosition;
@@ -88,6 +92,7 @@ void main(void)
 	vec3 lightDistance = viewLightPos.xyz - exViewPosition;
 	float lightDistanceLength = length(lightDistance);
 	vec3 lightDir = normalize(lightDistance);
+	//vec3 normal = normalize(gradientNoise(exPosition) + exViewNormal);
 	vec3 normal = normalize(exViewNormal);
 	
 	vec3 emition = MaterialEmit;
@@ -98,9 +103,7 @@ void main(void)
 	
 	vec3 outColor = emition + ambient + (diffuse + specular) * attenuation;
 
-	//fragColor = vec4(exPosition,1.0);
-	
-	fragColor = vec4(noise(exPosition) * outColor,1.0);
+	fragColor = vec4(noise(exPosition) * (outColor),1.0);
 	
 
 }

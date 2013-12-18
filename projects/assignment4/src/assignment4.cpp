@@ -220,7 +220,7 @@ void createShaderProgram() {
 	granite->sendUniformFloat("LightRangeLimit", lampRange);
 	
 	Texture tex;
-	tex.create3DTexture(Texture::get3DPerlinNoise(8, 8, 1, 68, 64), 64);
+	tex.create3DTexture(Texture::get3DPerlinNoise(8, 4, 1, 92, 128), 128);
 	granite->sendUnifomInt("UTexture", 0);
 	
 	checkOpenGLError("Problem passing LightDirection.");
@@ -260,7 +260,7 @@ void createShaderProgram() {
 	marble->sendUniformVec3("LightAttenuation", lampAtte);
 	marble->sendUniformFloat("LightRangeLimit", lampRange);
 
-	tex.create3DTexture(Texture::get3DPerlinNoise(8, 16, 1, 92, 64), 64);
+	//tex.create3DTexture(Texture::get3DPerlinNoise(8, 16, 1, 92, 64), 64);
 	marble->sendUnifomInt("UTexture", 0);
 
 	checkOpenGLError("Problem passing LightDirection.");
