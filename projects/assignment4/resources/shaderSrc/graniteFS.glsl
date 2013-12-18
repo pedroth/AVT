@@ -27,7 +27,7 @@ uniform sampler3D UTexture;
 float noise(in vec3 position) 
 {
 	float noiseAux = texture(UTexture, position).r;
-	return noiseAux;
+	return abs(noiseAux);
 }
 
 vec3 computeAmbient()
@@ -69,8 +69,7 @@ float computeAttenuation(in float lightDistance)
 }
 
 float sinozoid(vec3 pos) {
-	vec3 npos = normalize(pos);
-	float ret = (1 + sin(50 * (pos.x + noise(vec3(pos.x,pos.y,pos.z))/2))) / 2;
+	float ret = (1 + sin(50 * (pos.x + noise(pos)/2))) / 2;
 	return ret;
 }
 

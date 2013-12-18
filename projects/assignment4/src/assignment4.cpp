@@ -388,6 +388,7 @@ void drawScene() {
 	if(isMarble)
 		shader = ShaderManager::getInstance()->get("marbleShader");
 
+
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	ModelMatrixStack.loadMat(glm::mat4(1.0f));
@@ -775,6 +776,7 @@ void loadModels() {
 	aux = new WorldObject("BackPlane", renderManager->getRenderModel("BackPlane"));
 	world->add(aux);
 	tangram->operator[]("BackPlane") = aux;
+	world->setObjectShader("BackPlane", ShaderManager::getInstance()->get("PhongNormalsShader"));
 }
 
 void loadMaterials()

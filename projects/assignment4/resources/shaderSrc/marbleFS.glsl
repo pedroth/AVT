@@ -70,7 +70,7 @@ float computeAttenuation(in float lightDistance)
 
 float sinozoid(vec3 pos) {
 	vec3 npos = normalize(pos);
-	float ret = (1 + sin(50 * (pos.x + noise(vec3(pos.x,pos.y,pos.z))/2))) / 2;
+	float ret = (1 + sin(50 * (pos.x + noise(vec3(pos))/2))) / 2;
 	return ret;
 }
 
