@@ -2,7 +2,7 @@
 
 WorldObject::WorldObject(std::string name, RenderModel* mesh) 
 : name(name), mesh(mesh), quaternion(glm::quat(0.0f, 0.0f, 0.0f, 0.0f)), 
-position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color(), symmetryAxis(0) { 
+position(glm::vec3(0.0f,0.0f,0.0f)), scale(glm::vec3(1.0f)), color(), symmetryAxis(0),myShader(nullptr) { 
 }
 
 glm::quat WorldObject::getQuaternion() {
@@ -22,6 +22,12 @@ RenderModel* WorldObject::getMesh() {
 }
 std::string WorldObject::getName() {
 	return name;
+}
+ShaderProgram* WorldObject::getMyShader() {
+	return myShader;
+}
+void WorldObject::setMyShader(ShaderProgram* shader) {
+	myShader = shader;
 }
 void WorldObject::setQuaternion(glm::quat quaternion) {
 	quaternion = glm::normalize(quaternion);
@@ -68,6 +74,10 @@ glm::mat4x4 WorldObject::getTransformationMatrix() {
 }
 
 void WorldObject::draw(ShaderProgram* shader) {
+	if (hasMyShader()) {
+		shader = this->getMyShader();
+	}
+	
 	shader->bind();
 	this->color.sendToShader(shader);
 	ModelMatrixStack.push();
@@ -84,4 +94,8 @@ void WorldObject::draw(ShaderProgram* shader) {
 
 void WorldObject::setSymmetryAxis(int axis){
 	symmetryAxis = axis;
+}
+
+bool WorldObject::hasMyShader() {
+	return this->getMyShader() != nullptr;
 }

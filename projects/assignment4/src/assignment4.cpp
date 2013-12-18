@@ -774,9 +774,10 @@ void loadModels() {
 
 	renderManager->addRenderModel(modelLoader.loadModel("BackPlane", ModelPath + "BackPlane.obj"));
 	aux = new WorldObject("BackPlane", renderManager->getRenderModel("BackPlane"));
+	aux->setMyShader(ShaderManager::getInstance()->get("PhongNormalsShader"));
 	world->add(aux);
 	tangram->operator[]("BackPlane") = aux;
-	world->setObjectShader("BackPlane", ShaderManager::getInstance()->get("PhongNormalsShader"));
+	//world->setObjectShader("BackPlane", ShaderManager::getInstance()->get("PhongNormalsShader"));
 }
 
 void loadMaterials()

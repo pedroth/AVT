@@ -13,6 +13,7 @@ private:
 	RenderModel* mesh;
 	std::string name;
 	int symmetryAxis;
+	ShaderProgram *  myShader;
 
 public:
 	WorldObject(std::string name, RenderModel* mesh);
@@ -22,6 +23,8 @@ public:
 	ColorMaterial getColor();
 	RenderModel* getMesh();
 	std::string getName();
+	ShaderProgram* getMyShader();
+	void setMyShader(ShaderProgram* shader);
 	void setQuaternion(glm::quat quaternion);
 	void setPosition(glm::vec3 position);
 	void setScale(glm::vec3 scale);
@@ -32,6 +35,7 @@ public:
 	glm::mat4x4 getTransformationMatrix();
 	void draw(ShaderProgram* shader);
 	void setSymmetryAxis(int axis);
+	bool hasMyShader();
 };
 
 #endif
