@@ -78,6 +78,8 @@ int selectedObjectIndex = 0;
 int lastSelectObjectIndex = 0;
 int symmetryAxis = 0;
 
+GLuint FramebufferName = 0;
+
 WorldObjectManager *world = new WorldObjectManager();
 SymmetryTree *MySymmetryTree;
 Mirror3D *X0mirror, *Y0mirror;
@@ -355,19 +357,19 @@ void sendTimeToShaders() {
 }
 
 //TODO remove
-glm::mat4 testSubjectMM = glm::translate(glm::mat4(), glm::vec3(-4.0f, 4.0f, 1.0f));
-RenderModel *testSubject = 0;
-ColorMaterial *testSubjectMat = 0;
+//glm::mat4 testSubjectMM = glm::translate(glm::mat4(), glm::vec3(-4.0f, 4.0f, 1.0f));
+//RenderModel *testSubject = 0;
+//ColorMaterial *testSubjectMat = 0;
 
 void drawTestSubject()
 {
 	//TODO remove
-	ShaderProgram* phong = ShaderManager::getInstance()->get("marbleShader");
+	/*ShaderProgram* phong = ShaderManager::getInstance()->get("marbleShader");
 	phong->bind();
 	testSubjectMat->sendToShader(phong);
 	phong->sendUniformMat4("ModelMatrix", testSubjectMM);
 	testSubject->drawModel();
-	phong->unbind();
+	phong->unbind();*/
 }
 
 void drawScene() {
@@ -393,7 +395,6 @@ void drawScene() {
 
 	MySymmetryTree->draw(shader);
 
-	drawTestSubject();
 }
 
 void applySymmAxisToSymmetrys(int symmAxis)
@@ -518,16 +519,13 @@ void mouseMotion(int x, int y)  {
 			std::cerr << "Error on move objects function" << std::endl;
 		}
 
-		//WorldObject * selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
-		//selectdObj->setPosition(lambda);
-
 		selectdObj = tangram->at(selectedObject[selectedObjectIndex]);
 		selectdObj->translate(glm::vec3(x, y, 0));
 	}
 	else if (selected && rotateState){
 		static glm::vec2 delta(0.0f);
 		delta += glm::vec2(dx, dy);
-		//float aux = (float)fmod(dx, 2);
+		
 		float aux = -1.0f;
 		if (fabs(delta.x) > 3.0f){
 			aux = 0.0f;
@@ -620,14 +618,9 @@ void keyboardKey(unsigned char key, int x, int y) {
 	if (key == 'a'){
 		symmetryAxis++;
 		symmetryAxis = symmetryAxis % 3;
-		//world->setSymmetryAxis(symmetryAxis);
 		applySymmAxisToSymmetrys(symmetryAxis);
 	}
-	//if (key == 'q'){
-	//	static int symmAxis = 0;
-	//	symmAxis = (symmAxis + 1) % 3;
-	//	applySymmAxisToSymmetrys(symmAxis);
-	//}
+	
 	if (key == 's'){
 		world->save(symmetryAxis);
 	}
@@ -782,9 +775,6 @@ void loadModels() {
 	aux = new WorldObject("BackPlane", renderManager->getRenderModel("BackPlane"));
 	world->add(aux);
 	tangram->operator[]("BackPlane") = aux;
-
-	//TODO remove
-	testSubject = modelLoader.loadModel("TestSubject", ModelPath + "Monkey.obj");
 }
 
 void loadMaterials()
@@ -798,8 +788,6 @@ void loadMaterials()
 	MaterialManager *manager = MaterialManager::instance();
 	manager->loadFileList(MaterialPath, matList);
 
-	//TODO remove
-	testSubjectMat = manager->get("Monkey.mtl");
 }
 
 void createTextures()

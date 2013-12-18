@@ -76,32 +76,7 @@ void WorldObject::draw(ShaderProgram* shader) {
 	shader->sendUniformMat4("ModelMatrix",modelStackTop * transform);
 	//shader->sendUniformVec3("Color", Color);
 	mesh->drawModel();
-
-	this->color.sendToShaderMultiplied(shader, 0.9f);
-	if (symmetryAxis >= 1){
-		glFrontFace(GL_CW);
-		glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, 1, 1));
-		shader->sendUniformMat4("ModelMatrix", modelStackTop * symmetryTransform * transform);
-		//shader->sendUniformVec3("Color", newColor);
-		mesh->drawModel();
-		glFrontFace(GL_CCW);
-	}
-	if (symmetryAxis >= 2){
-		{
-			glFrontFace(GL_CW);
-			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(1, -1, 1));
-			shader->sendUniformMat4("ModelMatrix", modelStackTop * symmetryTransform * transform);
-			//shader->sendUniformVec3("Color", newColor);
-			mesh->drawModel();
-			glFrontFace(GL_CCW);
-		}
-		{
-			glm::mat4 symmetryTransform = glm::scale(glm::mat4(), glm::vec3(-1, -1, 1));
-			shader->sendUniformMat4("ModelMatrix", modelStackTop * symmetryTransform * transform);
-			//shader->sendUniformVec3("Color", newColor);
-			mesh->drawModel();
-		}
-	}
+	
 	ModelMatrixStack.pop();
 
 	shader->unbind();
